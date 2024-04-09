@@ -85,4 +85,5 @@ public class Juego {
 
         return jugadores;
     }
+    public void cambiarTurno(){ administradorDeTurno.avanzarTurno(); }
 }
