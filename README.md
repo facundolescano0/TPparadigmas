@@ -11,6 +11,11 @@
 
     cd TPparadigmas
  </li> 
+  <li>
+    
+    git checkout tp-1
+   
+</li>
  <li>
       
     mvn clean package 
