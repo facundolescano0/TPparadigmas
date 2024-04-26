@@ -7,6 +7,10 @@
       
     git clone git@github.com:facundolescano0/TPparadigmas.git 
   </li>
+  <li>      
+
+    cd TPparadigmas
+ </li> 
  <li>
       
     mvn clean package 
