@@ -4,13 +4,17 @@
 ### Pasos de ejecucion (lista de comandos):
 <ol>
   <li>
-      git clone git@github.com:facundolescano0/TPparadigmas.git 
+      
+    git clone git@github.com:facundolescano0/TPparadigmas.git 
   </li>
  <li>
-      mvn clean package 
+      
+    mvn clean package 
  </li> 
 <li>
+    
     java -jar  target/tp1-1.0-SNAPSHOT-jar-with-dependencies.jar
+   
 </li>
 </ol>
 
