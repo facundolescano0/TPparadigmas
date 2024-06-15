@@ -3,23 +3,23 @@ package org.example.model;
 public class EstacionTransporte extends Comprable{
 
     public EstacionTransporte(double precio, int ubicacion) {
-        super(precio, ubicacion);
+        super(precio, ubicacion,false);
         this.propietario = null;
     }
 
     @Override
-    public void setPropietario(Jugador propietario) {
+    public String setPropietario(Jugador propietario) {
         if(this.propietario == null){
             this.propietario = propietario;
             this.estado = EstadoPropiedades.COMPRADO;
-            System.out.println("Estacion comprada con exito");
+            //System.out.println("Estacion comprada con exito");
             propietario.restarPlata(precio);
             System.out.println("Le quedan $" + propietario.getPlata());
             propietario.agregarEstacion(this);
-            return;
-        }
-        if (propietario!= null){
-            System.out.println("La estacion ya fue comprada");
+            return ("Estacion comprada con exito");
+        }else{
+            //System.out.println("La estacion ya fue comprada");
+            return ("La estacion ya fue comprada");
         }
     }
 

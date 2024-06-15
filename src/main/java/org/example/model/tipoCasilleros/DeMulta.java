@@ -5,7 +5,7 @@ import org.example.model.Jugador;
 public class DeMulta extends Casillero implements CasilleroEjecutable {
     private double montoMulta;
     public DeMulta(int ubicacion,double montoMulta){
-        super("Multa",TipoCasillero.MULTA,ubicacion);
+        super("Multa",TipoCasillero.MULTA,ubicacion,true,false);
         this.montoMulta = montoMulta;
     }
 

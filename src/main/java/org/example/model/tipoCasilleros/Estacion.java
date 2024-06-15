@@ -7,9 +7,10 @@ public class Estacion extends Casillero implements CasilleroEjecutable{
     private final EstacionTransporte estacion;
 
     public Estacion(int ubicacion,double precio){
-        super("De transporte",TipoCasillero.ESTACION,ubicacion);
+        super("De transporte",TipoCasillero.ESTACION,ubicacion,true,true);
         this.precio = precio;
         this.estacion = new EstacionTransporte(precio,ubicacion);
+        this.EsEjecutable = true;
     }
 
     @Override

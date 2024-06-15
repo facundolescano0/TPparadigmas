@@ -33,10 +33,10 @@ public class TableroView {
         completarHashPosiciones(jugadores);
         for (int i = 0; i< tablero.getCantidadCasilleros(); i++){
             ArrayList<Jugador> jugadoresEnPosicion = posJugador.get(i);
-            if (!(tablero.getCasillero(i) instanceof DePropiedad) && !(tablero.getCasillero(i) instanceof Estacion)) {
+            if (!(tablero.getCasillero(i).getEsComprable())) {
                 System.out.print(String.format(formato, i, tablero.getCasillero(i).getEfecto(), "", "", ""));
             }else {
-                if (tablero.getCasillero(i) instanceof DePropiedad){
+                if (tablero.getCasillero(i).getEsCasilleroPropiedad()){
                     ArrayList<Barrio> barrios = tablero.getBarrios();
                     imprimirCasillerosPropiedad(barrios,i,formato);
                 }else{

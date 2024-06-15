@@ -23,13 +23,14 @@ public class Configuracion {
 
 
     public Configuracion(List<String> configuraciones) {
-        cantidadCasilleros = Integer.parseInt(configuraciones.get(ConfiguracionCheckArgumentos.CASILLEROS.ordinal()));
-        montoInicial = Integer.parseInt(configuraciones.get(ConfiguracionCheckArgumentos.DINERO_INICIAL.ordinal()));
-        cantidadDeLados= Integer.parseInt(configuraciones.get(ConfiguracionCheckArgumentos.CANTIDAD_DE_LADOS_EN_DADO.ordinal()));
-        montoVuelta = Integer.parseInt(configuraciones.get(ConfiguracionCheckArgumentos.DINERO_VUELTA.ordinal()));
-        condenaCarcel = Integer.parseInt(configuraciones.get(ConfiguracionCheckArgumentos.TURNOS_PRESO.ordinal()));
-        montoDeMulta = Integer.parseInt(configuraciones.get(ConfiguracionCheckArgumentos.MULTA.ordinal()));
-        montoFianza = Integer.parseInt(configuraciones.get(ConfiguracionCheckArgumentos.FIANZA.ordinal()));
+        cantidadCasilleros = Constantes.CANTIDAD_CASILLEROS;
+        montoInicial = Constantes.DINERO_INICIAL;
+        cantidadDeLados= Constantes.CANTIDAD_DE_LADOS_EN_DADO;
+        montoVuelta = Constantes.DINERO_VUELTA;
+        condenaCarcel = Constantes.TURNOS_PRESO;
+        montoDeMulta = Constantes.MULTA;
+        montoFianza = Constantes.FIANZA;
+
         ArrayList<Jugador> jugadores = this.crearJugadores(configuraciones);
         this.jugadores = jugadores;
         asignacionColores(jugadores);
@@ -37,7 +38,7 @@ public class Configuracion {
 
     private ArrayList<Jugador> crearJugadores(List<String> configuraciones){
         List<String> nombres = List.of(configuraciones.get(0).split(" "));
-        int plataInicial = Integer.parseInt(configuraciones.get(ConfiguracionCheckArgumentos.DINERO_INICIAL.ordinal()));
+        int plataInicial = Constantes.DINERO_INICIAL;
         ArrayList<Jugador> jugadores = new ArrayList<Jugador>();
         for (String nombre : nombres) {
             Jugador jugador = new Jugador(nombre);

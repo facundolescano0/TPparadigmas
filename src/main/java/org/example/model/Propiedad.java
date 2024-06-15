@@ -12,7 +12,7 @@ public class Propiedad extends Comprable {
     private double precioCasa;
 
     public Propiedad(int precio, int numeroDeBarrio, int ubicacion) {
-        super(precio, ubicacion);
+        super(precio, ubicacion,true);
         this.numeroDeBarrio = numeroDeBarrio;
         this.construcciones = Construcciones.SIN_CASA;
         this.precioCasa = (precio * Constantes.PORCENTAJE_PRECIO_CASA);
@@ -30,7 +30,7 @@ public class Propiedad extends Comprable {
         return numeroDeBarrio;
     }
 
-    public void setPropietario(Jugador propietario) {
+    public String setPropietario(Jugador propietario) {
         if (this.propietario == null) {
             this.propietario = propietario;
             this.estado = EstadoPropiedades.COMPRADO;
@@ -38,11 +38,12 @@ public class Propiedad extends Comprable {
             System.out.println("Propiedad comprada con exito");
             propietario.restarPlata(precio);
             System.out.println("Le quedan $" + propietario.getPlata());
-            return;
+            return null;
         }
         if (propietario!= null){
             System.out.println("La propiedad ya fue comprada");
         }
+        return null;
     }
 
     public Construcciones getConstrucciones() {

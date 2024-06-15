@@ -3,14 +3,17 @@ package org.example.view;
 
 
 import org.example.funciones.FuncionColorPrints;
-import org.example.model.Jugador;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import org.example.model.Jugador;
 import org.fusesource.jansi.Ansi;
 
 public class JugadorView {
     private final List<Jugador> jugadores;
 
-    public JugadorView(List<Jugador> jugadores) {
+    public JugadorView(ArrayList<Jugador> jugadores) {
         this.jugadores = jugadores;
     }
 

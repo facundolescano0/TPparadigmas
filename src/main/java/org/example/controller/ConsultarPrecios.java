@@ -11,8 +11,10 @@ public class ConsultarPrecios implements EjecutarAccion{
         this.funcionesExtras = func;
     }
 
-    public void ejecutar(Jugador jugador, int casilleroPropiedad,ConstruccionController controller){
-        Propiedad propiedad = funcionesExtras.obtenerPropiedad(casilleroPropiedad);
+    public void ejecutar(Jugador jugador, int casilleroPropiedad, ConstruccionController controller){
+    Propiedad propiedad = funcionesExtras.obtenerPropiedad(casilleroPropiedad);
+    if (propiedad != null) {
         System.out.println("El precio de una casa en esa propiedad es " + propiedad.getPrecioCasa());
     }
+}
 }

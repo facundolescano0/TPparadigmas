@@ -4,7 +4,7 @@ public class Carcel extends Casillero{
     private int cantTurnos;
 
     public Carcel(int ubicacion,double fianza,int cantTurnos) {
-        super("Carcel",TipoCasillero.CARCEL,ubicacion);
+        super("Carcel",TipoCasillero.CARCEL,ubicacion,false,false);
         this.fianza = fianza;
         this.cantTurnos = cantTurnos;
     }

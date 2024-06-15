@@ -56,17 +56,17 @@ public class Jugador{
     }
 
     public void agregarComprable(Comprable comprable){
-        if(comprable instanceof Propiedad){
+        if(comprable.getEsPropiedad()){
             agregarPropiedad((Propiedad) comprable);
-        }else if(comprable instanceof EstacionTransporte) {
+        }else {
             agregarEstacion((EstacionTransporte) comprable);
         }
     }
 
     public void eliminarComprable(Comprable comprable){
-        if(comprable instanceof Propiedad) {
+        if(comprable.getEsPropiedad()) {
             eliminarPropiedad((Propiedad)comprable);
-        }else if(comprable instanceof EstacionTransporte){
+        }else{
         eliminarEstacion((EstacionTransporte)comprable);
         }
     }

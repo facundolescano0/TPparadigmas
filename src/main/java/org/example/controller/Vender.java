@@ -17,9 +17,9 @@ public class Vender implements EjecutarAccion {
     public void ejecutar(Jugador jugador, int casilleroComprable, ConstruccionController controller) {
         Comprable comprable = funciones.ChequearComprableYPropietarioJugador(casilleroComprable, jugador);
         if (comprable != null) {
-            if (comprable instanceof Propiedad) {
+            if (comprable.getEsPropiedad()) {
                 controller.vender(jugador, (Propiedad) comprable);
-            } else if (comprable instanceof EstacionTransporte) {
+            } else{
                 jugador.venderEstacion(comprable);
             }
         }

@@ -9,9 +9,10 @@ public class IrALaCarcel extends Casillero implements CasilleroEjecutable{
     private final int ubicacionCarcel;
 
     public IrALaCarcel(int ubicacion, int duracionPena,int ubicacionCarcel) {
-        super("IrALaCarcel",TipoCasillero.IR_A_LA_CARCEL,ubicacion);
+        super("IrALaCarcel",TipoCasillero.IR_A_LA_CARCEL,ubicacion,true,false);
         this.duracionPena = duracionPena;
         this.ubicacionCarcel = ubicacionCarcel;
+        this.EsEjecutable = true;
     }
 
     public void ejecutarCasillero(Jugador jugador) {

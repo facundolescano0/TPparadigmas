@@ -9,13 +9,19 @@ public abstract class Comprable {
     protected Jugador propietario;
     protected EstadoPropiedades estado;
     protected int ubicacion;
+    protected boolean EsPropiedad;
 
-    public Comprable(double precio, int ubicacion) {
+    public Comprable(double precio, int ubicacion,boolean condicion) {
         this.precio = precio;
         this.ubicacion = ubicacion;
         this.propietario = null;
         this.estado = EstadoPropiedades.EN_VENTA;
         this.alquiler = (precio * Constantes.PORCENTAJE_ALQUILER);
+        this.EsPropiedad = condicion;
+    }
+
+    public boolean getEsPropiedad(){
+        return EsPropiedad;
     }
 
     public EstadoPropiedades getEstado() {
@@ -32,7 +38,7 @@ public abstract class Comprable {
 
     public void setUbicacion(int ubicacion){ this.ubicacion = ubicacion; }
 
-    public abstract void setPropietario(Jugador propietario);
+    public abstract String setPropietario(Jugador propietario);
 
     public void liberar() {
         this.propietario = null;

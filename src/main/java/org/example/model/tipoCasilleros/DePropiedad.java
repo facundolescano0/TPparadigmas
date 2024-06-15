@@ -7,8 +7,9 @@ public class DePropiedad extends Casillero implements CasilleroEjecutable {
     private final Propiedad propiedad;
 
     public DePropiedad(int casillero, int precio, int numeroDeBarrio) {
-        super("Propiedad", TipoCasillero.PROPIEDAD, casillero);
+        super("Propiedad", TipoCasillero.PROPIEDAD, casillero,true,true);
         this.propiedad = new Propiedad(precio, numeroDeBarrio, casillero);
+        this.EsPropiedad = true;
     }
 
     @Override

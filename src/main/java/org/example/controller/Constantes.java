@@ -1,6 +1,14 @@
 package org.example.controller;
 
 public class Constantes {
+// Constantes clases de juego
+    public static final int CANTIDAD_CASILLEROS = 24;
+    public static final int CANTIDAD_DE_LADOS_EN_DADO = 6;
+    public static final int DINERO_INICIAL = 1000;
+    public static final int DINERO_VUELTA = 200;
+    public static final int TURNOS_PRESO = 3;
+    public static final int MULTA = 350;
+    public static final int FIANZA = 450;
     public static final int NEGATIVO = -1;
     public static final int POS_LLEGADA_SALIDA = 0;
     public static final double POS_CARCEL = 0.250;
