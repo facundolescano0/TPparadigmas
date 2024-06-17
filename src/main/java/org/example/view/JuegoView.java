@@ -23,8 +23,10 @@ public class JuegoView {
         JugadorView jugadorView = new JugadorView(jugadores);
         jugadorView.mostrarJugadores();
         FuncionesExtras.delay(0000);
-        System.out.println();
 
+    }
+    public void imprimirMensajes(String mensaje){
+        System.out.println(mensaje);
     }
     public void terminarJuego(){
         System.out.println("Juego terminado");

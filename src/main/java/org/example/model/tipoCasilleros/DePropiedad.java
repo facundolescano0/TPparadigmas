@@ -22,25 +22,24 @@ public class DePropiedad extends Casillero implements CasilleroEjecutable {
     }
 
     @Override
-    public void ejecutarCasillero(Jugador jugador) {
+    public String ejecutarCasillero(Jugador jugador) {
         Jugador propietario = propiedad.getPropietario();
         if (propiedad.getEstado() == EstadoPropiedades.COMPRADO && propietario != jugador) {
             if(jugador.getPatrimonioTotal() < propiedad.getAlquiler()) {
-                System.out.println();
-                System.out.println("EL JUGADOR " + jugador.getNombre() + "ENTRÓ EN BANCARROTA. SIN DINERO SUFICIENTE.");
                 jugador.setQuiebra();
+                return("\n EL JUGADOR " + jugador.getNombre() + "ENTRÓ EN BANCARROTA. SIN DINERO SUFICIENTE.");
             }else{
                 double alquiler = propiedad.getAlquiler();
                 if (jugador.restarPlata(alquiler)){
                     propietario.sumarPlata(alquiler);
-                    System.out.printf("%s pagaste %f de alquiler por estar en la propiedad de %s\n",jugador.getNombre(),alquiler,propiedad.getNombrePropietario());
+                    return( jugador.getNombre() + " pagaste " + alquiler + "de alquiler por estar en la propiedad de "+ propiedad.getNombrePropietario() + "\n");
                 }else{
-                    System.out.println(jugador.getNombre() +"¡no tienes dinero suficiente para pagar el alquiler de esta propiedad!\n\tDEBES HIPOTECAR SI O SI ANTES DE AVANZAR, SINO VA A PERDER");
-                    System.out.println("Antes de avanzar el turno debes tener $" + propiedad.getPrecio() + " sino perderás automaticamente. La deuda se paga al final de su turno.");
                     jugador.setDeuda();
+                    return (jugador.getNombre() +"¡no tienes dinero suficiente para pagar el alquiler de esta propiedad!\n\tDEBES HIPOTECAR SI O SI ANTES DE AVANZAR, SINO VA A PERDER\n Antes de avanzar el turno debes tener $" + propiedad.getPrecio() + " sino perderás automaticamente. La deuda se paga al final de su turno.");
+
                 }
             }
         }
-
+    return "";
     }
 }

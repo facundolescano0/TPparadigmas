@@ -15,10 +15,11 @@ public class IrALaCarcel extends Casillero implements CasilleroEjecutable{
         this.EsEjecutable = true;
     }
 
-    public void ejecutarCasillero(Jugador jugador) {
+    public String ejecutarCasillero(Jugador jugador) {
         jugador.setEstado(Estado.Preso);
         jugador.setCondena(duracionPena);
         jugador.setUbicacion(ubicacionCarcel);
-        System.out.printf("Ups! %s se va preso %d turnos\n", jugador.getNombre(), duracionPena);
+        return String.format("Ups! %s se va preso %d turnos\n", jugador.getNombre(), duracionPena);
+
     }
 }

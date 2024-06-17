@@ -55,20 +55,20 @@ public class JuegoController {
         Ansi resetColor = Ansi.ansi().reset();
         FuncionColorPrints funcionColorPrints = new FuncionColorPrints();
         colorANSI = funcionColorPrints.obtenerColorANSI(jugador.getColor());
-        System.out.println(colorANSI+"Es el turno de " + jugador.getNombre() + "\n");
+        vistaJuego.imprimirMensajes(colorANSI+"Es el turno de " + jugador.getNombre() + "\n");
 
         Acciones acciones = new Acciones();
         acciones.accionesJugadorPreso(colorANSI,resetColor);
         Scanner scanner = new Scanner(System.in);
         int numeroElecto = -1;
         while((numeroElecto != 0) && (numeroElecto != 1) && (jugador.getCondena() != 0)){
-            System.out.println("Seleccione la accion que quiere realizar indicando su numero (NUMERO):\n");
+            vistaJuego.imprimirMensajes("Seleccione la accion que quiere realizar indicando su numero (NUMERO):\n");
             String accion = scanner.nextLine();
             numeroElecto = corroboroAccion(accion);
         }
         if (numeroElecto == -1){
             FuncionesExtras.delay(1000);
-            System.out.println("El jugador "+ jugador.getNombre() + " complió su condena!");
+            vistaJuego.imprimirMensajes("El jugador "+ jugador.getNombre() + " complió su condena!");
             FuncionesExtras.delay(1000);
             jugador.setEstado(Estado.EnJuego);
 
@@ -78,14 +78,14 @@ public class JuegoController {
         }else{
             int dados = juego.tirarDados();
             FuncionesExtras.delay(1000);
-            System.out.println("Saco: " + dados);
+            vistaJuego.imprimirMensajes("Saco: " + dados);
             FuncionesExtras.delay(1500);
             if(dados > jugador.getCondena()){
                 jugador.quedaLibre();
-                System.out.println(jugador.getNombre()+ " queda libre por sacar "+ dados+  " (dados) mayor que el numero de condena ("+ jugador.getCondena()+")");
+                vistaJuego.imprimirMensajes(jugador.getNombre()+ " queda libre por sacar "+ dados+  " (dados) mayor que el numero de condena ("+ jugador.getCondena()+")");
             } else {
                 jugador.restarCondena();
-                System.out.println(jugador.getNombre()+ " sigue preso. Ahora su condena es de ("+ jugador.getCondena()+")");
+                vistaJuego.imprimirMensajes(jugador.getNombre()+ " sigue preso. Ahora su condena es de ("+ jugador.getCondena()+")");
             }
             FuncionesExtras.delay(1000);
         }
@@ -101,10 +101,10 @@ public class JuegoController {
         Ansi resetColor = Ansi.ansi().reset();
         FuncionColorPrints funcionColorPrints = new FuncionColorPrints();
         colorANSI = funcionColorPrints.obtenerColorANSI(jugador.getColor());
-        System.out.println(colorANSI + "Es el turno de " + jugador.getNombre() + "\n" + "Te toco el numero: " + dados + "\n");
+        vistaJuego.imprimirMensajes(String.format(colorANSI + "Es el turno de " + jugador.getNombre() + "\n" + "Te toco el numero: " + dados + "\n"));
         int casillaAnterior = jugador.getUbicacion();
         int casillaActual = administradorDeMovimientos.avanzarJugador(jugador, dados);
-        System.out.println("Usted esta en el casillero: " + casillaActual + "\n" + resetColor);
+        vistaJuego.imprimirMensajes(String.format("Usted esta en el casillero: " + casillaActual + "\n" + resetColor));
         pagarBono(jugador, dados, casillaAnterior);
         Casillero casillero = tablero.getCasillero(casillaActual);
 
@@ -115,18 +115,18 @@ public class JuegoController {
         int numeroElecto = 1;
         vistaJuego.mostrar();
         Acciones acciones = new Acciones();
-        acciones.acciones(colorANSI, resetColor);
+        vistaJuego.imprimirMensajes(acciones.acciones(colorANSI, resetColor));
         Scanner scanner = new Scanner(System.in);
         while (numeroElecto != 0) {
-            System.out.println(colorANSI + "Seleccione la accion que quiere realizar indicando su numero (NUMERO):\n"+resetColor);
+            vistaJuego.imprimirMensajes(String.format(colorANSI + "Seleccione la accion que quiere realizar indicando su numero (NUMERO):\n"+resetColor));
             String accion = scanner.nextLine();
             numeroElecto = corroboroAccion(accion);
             if (numeroElecto == Constantes.NEGATIVO) {
-                System.out.println("Accion inexistente\n");
+                vistaJuego.imprimirMensajes("Accion inexistente\n");
             } else {
                 Accion accionElecta = acciones.getAccion(numeroElecto);
                 if (accionElecta == null || accionElecta == Accion.PAGAR_FIANZA || accionElecta == Accion.TIRAR_DADOS) {
-                    System.out.println("Accion inexistente");
+                    vistaJuego.imprimirMensajes("Accion inexistente");
                 }else{
                 ejecutarAccion(accionElecta, jugador);
                 }
@@ -142,7 +142,7 @@ public class JuegoController {
             }
         }
         if (jugador.estaEnQuiebra()) {
-            System.out.printf("%s perdio!\n", jugador.getNombre());
+            vistaJuego.imprimirMensajes(String.format("%s perdio!\n" ,jugador.getNombre()));
             controlTablero.eliminarPropiedadesDelJugadorEnQuiebra(jugador);
             juego.eliminarJugador(jugador);
             juego.terminado();
@@ -158,7 +158,7 @@ public class JuegoController {
             }else if (accionElecta != Accion.TERMINAR_TURNO && accionElecta != Accion.PAGAR_FIANZA){
                 CheckStrToInt checkStrToInt = new CheckStrToInt();
                 Scanner scanner = new Scanner(System.in);
-                System.out.println("Seleccione el casillero en que se encuentra la propiedad (NUMERO):");
+                vistaJuego.imprimirMensajes("Seleccione el casillero en que se encuentra la propiedad (NUMERO):");
                 String casillero = scanner.nextLine();
                 int numero = (checkStrToInt.checkStringToInt(casillero));
                 switch (accionElecta) {
@@ -183,41 +183,33 @@ public class JuegoController {
     private void checkDeudaMulta(Jugador jugador) {
         Casillero casilleroDeMulta = tablero.getCasillero(jugador.getUbicacion());
         if(jugador.restarPlata(casilleroDeMulta.getPrecio()) ){
-            System.out.println("Perfecto! El jugador "+jugador.getNombre() +" pudo pagar su multa!");
+            vistaJuego.imprimirMensajes("Perfecto! El jugador "+jugador.getNombre() +" pudo pagar su multa!");
             jugador.setEstado(Estado.EnJuego);
         }else{
-            System.out.println("EL JUGADOR "+ jugador.getNombre()+" NO PAGO SU MULTA! ENTRÓ EN BANCARROTA");
+            vistaJuego.imprimirMensajes("EL JUGADOR "+ jugador.getNombre()+" NO PAGO SU MULTA! ENTRÓ EN BANCARROTA");
             jugador.setQuiebra();
         }
     }
 
     private void checkDeudaComprable(Jugador jugador,Propiedad propiedad){
         if (jugador.restarPlata(propiedad.getAlquiler())){
-            System.out.println("Perfecto! El jugador "+jugador.getNombre() +" pudo pagar su deuda!");
+            vistaJuego.imprimirMensajes("Perfecto! El jugador "+jugador.getNombre() +" pudo pagar su deuda!");
             jugador.setEstado(Estado.EnJuego);
         }else{
-            System.out.println("EL JUGADOR "+ jugador.getNombre()+" NO PAGO SU DEUDA! ENTRÓ EN BANCARROTA");
+            vistaJuego.imprimirMensajes("EL JUGADOR "+ jugador.getNombre()+" NO PAGO SU DEUDA! ENTRÓ EN BANCARROTA");
             jugador.setQuiebra();
         }
     }
 
     private void ejecutar(Jugador jugador, int ubicacionJugador){
         CasilleroEjecutable casillero = tablero.getCasilleroEjecutable(ubicacionJugador);
-        casillero.ejecutarCasillero(jugador);
+        vistaJuego.imprimirMensajes(casillero.ejecutarCasillero(jugador));
     }
 
     private int corroboroAccion(String accion) {
         CheckStrToInt checkStrToInt = new CheckStrToInt();
         return checkStrToInt.checkStringToInt(accion);
     }
-
-        public ArrayList<Jugador> getJugadores() {
-            return juego.getJugadores();
-        }
-
-        public Tablero getTablero() {
-            return juego.getTablero();
-        }
     }
 
 

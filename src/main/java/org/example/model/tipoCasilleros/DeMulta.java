@@ -14,18 +14,18 @@ public class DeMulta extends Casillero implements CasilleroEjecutable {
         return montoMulta;
     }
 
-    public void ejecutarCasillero(Jugador jugador) {
+    public String ejecutarCasillero(Jugador jugador) {
         if(jugador.getPatrimonioTotal() < montoMulta) {
-            System.out.println();
-            System.out.println("EL JUGADOR " + jugador.getNombre() + "ENTRÓ EN BANCARROTA. SIN DINERO SUFICIENTE.");
             jugador.setQuiebra();
+            return ("EL JUGADOR " + jugador.getNombre() + "ENTRÓ EN BANCARROTA. SIN DINERO SUFICIENTE.");
+
         }else{
             if (jugador.restarPlata(montoMulta)){
-                System.out.println(jugador.getNombre() + " pagaste multa de $"+montoMulta);
+                return (jugador.getNombre() + " pagaste multa de $"+montoMulta);
             }else{
-                System.out.println(jugador.getNombre() +" ¡no tienes dinero suficiente para pagar la multa!\nDEBES HIPOTECAR O VENDER SI O SI ANTES DE AVANZAR, SINO VA A PERDER");
-                System.out.println("Antes de avanzar el turno debes tener $" + montoMulta + " sino perderás automaticamente. La deuda se paga al final de su turno.");
                 jugador.setDeuda();
+                return (jugador.getNombre() +" ¡no tienes dinero suficiente para pagar la multa!\nDEBES HIPOTECAR O VENDER SI O SI ANTES DE AVANZAR, SINO VA A PERDER \n Antes de avanzar el turno debes tener $" + montoMulta + " sino perderás automaticamente. La deuda se paga al final de su turno.");
+
             }
         }
     }

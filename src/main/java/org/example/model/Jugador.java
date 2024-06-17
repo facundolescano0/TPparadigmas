@@ -47,9 +47,6 @@ public class Jugador{
         this.patrimonio -= monto;
     }
 
-    public ArrayList<EstacionTransporte> getEstaciones() {
-        return estaciones;
-    }
 
     public void deshipotecarPropiedad(Propiedad propiedad){
         propiedad.deshipotecar(this);
