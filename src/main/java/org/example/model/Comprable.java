@@ -45,6 +45,6 @@ public abstract class Comprable {
         this.estado = EstadoPropiedades.EN_VENTA;
     }
 
-    public abstract void venderComprable();
+    public abstract String venderComprable();
 
 }

@@ -4,13 +4,13 @@ import org.example.model.Jugador;
 import org.example.model.tipoCasilleros.Casillero;
 
 public interface ListaAcciones {
-    void construir(Jugador jugador, int propiedad, ConstruccionController controller);
-    void consultar_precio_casa(Jugador jugador, int propiedad, ConstruccionController controller);
-    void vender(Jugador jugador, int propiedad, ConstruccionController controller);
-    void hipotecar(Jugador jugador, int propiedad, ConstruccionController controller);
-    void comprar(Jugador jugador, int propiedad, ConstruccionController controller);
-    void deshipotecar(Jugador jugador, int propiedad,  ConstruccionController controller);
-    void pagar_fianza(Jugador jugador,Casillero carcel);
+    String construir(Jugador jugador, int propiedad, ConstruccionController controller);
+    String consultar_precio_casa(Jugador jugador, int propiedad, ConstruccionController controller);
+    String vender(Jugador jugador, int propiedad, ConstruccionController controller);
+    String hipotecar(Jugador jugador, int propiedad, ConstruccionController controller);
+    String comprar(Jugador jugador, int propiedad, ConstruccionController controller);
+    String deshipotecar(Jugador jugador, int propiedad,  ConstruccionController controller);
+    String pagar_fianza(Jugador jugador,Casillero carcel);
 }
 
 

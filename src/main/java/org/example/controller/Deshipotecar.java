@@ -11,10 +11,11 @@ public class Deshipotecar implements EjecutarAccion{
         this.funciones = func;
     }
 
-    public void ejecutar(Jugador jugador, int propiedad, ConstruccionController controller) {
+    public String ejecutar(Jugador jugador, int propiedad, ConstruccionController controller) {
         Propiedad prop = funciones.obtenerPropiedadJugador(propiedad,jugador);
         if (prop != null) {
-            jugador.deshipotecarPropiedad(prop);
+            return jugador.deshipotecarPropiedad(prop);
         }
+        return null;
     }
 }

@@ -23,37 +23,37 @@ public class FachadaAcciones implements ListaAcciones{
     }
 
     @Override
-    public void comprar(Jugador jugador,int num,ConstruccionController controller) {
-        comprar.ejecutar(jugador,num,controller);
+    public String comprar(Jugador jugador,int num,ConstruccionController controller) {
+        return comprar.ejecutar(jugador,num,controller);
     }
 
     @Override
-    public void construir(Jugador jugador, int propiedad, ConstruccionController controller) {
-        construir.ejecutar(jugador,propiedad,controller);
+    public String construir(Jugador jugador, int propiedad, ConstruccionController controller) {
+        return construir.ejecutar(jugador,propiedad,controller);
     }
 
     @Override
-    public void deshipotecar(Jugador jugador, int propiedad, ConstruccionController controller) {
-        deshipotecar.ejecutar(jugador,propiedad,controller);
+    public String deshipotecar(Jugador jugador, int propiedad, ConstruccionController controller) {
+        return deshipotecar.ejecutar(jugador,propiedad,controller);
     }
 
     @Override
-    public void hipotecar(Jugador jugador, int propiedad, ConstruccionController controller) {
-        hipoteca.ejecutar(jugador,propiedad,controller);
+    public String hipotecar(Jugador jugador, int propiedad, ConstruccionController controller) {
+        return hipoteca.ejecutar(jugador,propiedad,controller);
     }
 
     @Override
-    public void consultar_precio_casa(Jugador jugador, int propiedad,  ConstruccionController controller) {
-        consultarPrecios.ejecutar(jugador,propiedad,controller);
+    public String consultar_precio_casa(Jugador jugador, int propiedad,  ConstruccionController controller) {
+        return consultarPrecios.ejecutar(jugador,propiedad,controller);
     }
 
     @Override
-    public void vender(Jugador jugador, int propiedad,  ConstruccionController controller) {
-        vender.ejecutar(jugador,propiedad,controller);
+    public String vender(Jugador jugador, int propiedad,  ConstruccionController controller) {
+        return vender.ejecutar(jugador,propiedad,controller);
     }
 
     @Override
-    public void pagar_fianza(Jugador jugador,Casillero carcel){
-        pagarFianza.ejecutar(jugador,carcel);
+    public String pagar_fianza(Jugador jugador,Casillero carcel){
+        return pagarFianza.ejecutar(jugador,carcel);
     }
 }

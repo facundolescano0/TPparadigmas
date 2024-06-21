@@ -1,7 +1,12 @@
 package org.example.model;
 
 import org.example.controller.Constantes;
+import org.fusesource.jansi.Ansi;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class Jugador{
     private final String nombre;
@@ -14,6 +19,8 @@ public class Jugador{
     private int condena;
     private double patrimonio;
     private EstadoAcciones estadoAcciones;
+    private Acciones acciones;
+    private String textoAcciones;
 
 
     public Jugador(String nombre) {
@@ -24,6 +31,67 @@ public class Jugador{
         this.condena = 0;
         this.estaciones = new ArrayList<>();
         this.patrimonio = 0;
+        this.estadoAcciones = EstadoAcciones.SIN_PROPIEADES;
+        this.acciones = new Acciones();
+        this.textoAcciones= "";
+
+    }
+
+    public String obtenerAccionesDisponibles(){
+        String mensaje = "";
+        Ansi colorANSI = null;
+        Ansi resetColor = Ansi.ansi().reset();
+        switch (estadoAcciones) {
+            case CON_BARRIO:
+                mensaje = acciones.accionesJugadorConBarrio(colorANSI, resetColor);
+                break;
+            case CON_CASA:
+                mensaje = acciones.accionesJugadorConPropiedad(colorANSI, resetColor);
+                break; // Falta el 'break' aquí
+            case PRESO:
+                mensaje = acciones.accionesJugadorPreso(colorANSI, resetColor);
+                break;
+            case SIN_PROPIEADES:
+                mensaje = acciones.accionesJugadorSinPropiedad(colorANSI, resetColor);
+                break;
+            default:
+                break;
+        }
+        return mensaje;
+    }
+
+    public EstadoAcciones getEstadoAcciones(){
+        return estadoAcciones;
+    }
+
+    public void actualizarEstadoAcciones(){
+        if (!propiedades.isEmpty() || !estaciones.isEmpty()){
+            if (tieneBarrio()) {
+                this.estadoAcciones = EstadoAcciones.CON_BARRIO;
+            }else{
+                this.estadoAcciones = EstadoAcciones.CON_CASA;
+            }
+        }else{
+            this.estadoAcciones = EstadoAcciones.SIN_PROPIEADES;
+        }
+    }
+
+
+    private boolean tieneBarrio(){
+        Map<Integer, Integer> ocurrencias = new HashMap<>();
+        for (Propiedad propiedad : propiedades){
+            if (ocurrencias.containsKey(propiedad.getBarrio())){
+                ocurrencias.put(propiedad.getBarrio(), ocurrencias.get(propiedad.getBarrio()) + 1);
+            }else{
+                ocurrencias.put(propiedad.getBarrio(), 1);
+            }
+        }
+        for (Map.Entry<Integer, Integer> entry : ocurrencias.entrySet()){
+            if (entry.getValue() == Constantes.CANTIDAD_CASAS_POR_BARRIO){
+                return true;
+            }
+        }
+        return false;
     }
 
     public void sumarAlPatrimonio(double monto){
@@ -38,7 +106,9 @@ public class Jugador{
         propiedades.remove(propiedad);
     }
 
-    public void agregarEstacion(EstacionTransporte estacion){estaciones.add(estacion);}
+    public void agregarEstacion(EstacionTransporte estacion){
+        estaciones.add(estacion);
+    }
 
     public void hipotecarPropiedad(Barrio barrio,Propiedad propiedad){
         propiedad.hipotecar(barrio,this);
@@ -50,8 +120,8 @@ public class Jugador{
     }
 
 
-    public void deshipotecarPropiedad(Propiedad propiedad){
-        propiedad.deshipotecar(this);
+    public String deshipotecarPropiedad(Propiedad propiedad){
+        return propiedad.deshipotecar(this);
     }
 
     public void agregarComprable(Comprable comprable){
@@ -60,6 +130,7 @@ public class Jugador{
         }else {
             agregarEstacion((EstacionTransporte) comprable);
         }
+        actualizarEstadoAcciones();
     }
 
     public void eliminarComprable(Comprable comprable){
@@ -70,14 +141,15 @@ public class Jugador{
         }
     }
 
-    public void comprarComprable(Comprable comprable){
+    public String comprarComprable(Comprable comprable){
         double precioComprable = comprable.getPrecio();
         if (this.plata >= precioComprable) {
-            comprable.setPropietario(this);
+            String mensaje = comprable.setPropietario(this);
             sumarAlPatrimonio(precioComprable * Constantes.PORCENTAJE_DE_VENTA);
             agregarComprable(comprable);
+            return mensaje;
         }else{
-            System.out.println("No se puede comprar propiedad");
+            return "No se puede comprar propiedad";
         }
     }
 
@@ -149,11 +221,12 @@ public class Jugador{
         estaciones.remove(estacionTransporte);
     }
 
-    public void venderEstacion(Comprable comprable){
-        comprable.venderComprable();
+    public String venderEstacion(Comprable comprable){
+        String mensaje = comprable.venderComprable();
         eliminarComprable(comprable);
         restarPatrimonio(comprable.getPrecio());
-        System.out.println("Ahora tiene $" + this.getPlata());
+        mensaje += ("Ahora tiene $" + this.getPlata());
+        return mensaje;
     }
 }
 

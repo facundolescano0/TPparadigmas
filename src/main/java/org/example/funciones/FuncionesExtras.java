@@ -10,12 +10,10 @@ import java.util.List;
 
 public class FuncionesExtras {
     private Tablero tablero;
-    private Juego juego;
 
-    public FuncionesExtras(Juego juego) {
-        this.tablero = juego.getTablero();
-        this.juego = juego;
 
+    public FuncionesExtras(Tablero tablero) {
+        this.tablero = tablero;
     }
 
     public static void delay(int tiempo) {
@@ -35,7 +33,6 @@ public class FuncionesExtras {
                 e.printStackTrace();
             }
         }
-        System.out.println("");
     }
 
     public Propiedad obtenerPropiedad(int casillero) {
@@ -43,7 +40,6 @@ public class FuncionesExtras {
             DePropiedad casilleroPropiedad = tablero.getPropiedad(casillero);
             return casilleroPropiedad.getPropiedad();
         }
-        System.out.println("Accion imposible de realizar");
         return null;
     }
 
@@ -55,16 +51,13 @@ public class FuncionesExtras {
                     return propiedad;
                 }
             }
-            System.out.println("Esa propiedad no te pertenece");
             return null;
         }
-        System.out.println("Accion imposible de realizar");
         return null;
     }
 
     public Comprable obtenerComprable(int casillero) {
         if(!esComprable(casillero)){
-            System.out.println("Accion imposible de realizar");
             return null;
         }
         Comprable comprable = null;
@@ -82,11 +75,6 @@ public class FuncionesExtras {
         Comprable comprable = obtenerComprable(casillero);
         if(comprable != null && comprable.getPropietario()==jugador){
             return comprable;
-        }
-        if (comprable == null){
-                System.out.println("El casillero no es un objeto comprable.");
-        }else{
-                System.out.println("El jugador " + jugador.getNombre() + " no es dueño de esta ubicación");
         }
         return null;
     }

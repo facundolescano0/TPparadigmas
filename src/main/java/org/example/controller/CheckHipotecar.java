@@ -14,17 +14,11 @@ public class CheckHipotecar {
     }
 
     public boolean validarHipotecar(){
-        if (!jugador.getPropiedades().contains(propiedad)){
-            System.out.println("ERROR: EL JUGADOR "+ jugador.getNombre() + " NO ES DUEÑO DE LA PROPIEDAD");
-            return false;
-        }
-        if (propiedad.getEstado() != EstadoPropiedades.COMPRADO){
-            System.out.println("ERROR: LA PROPIEDAD SE ENCUENTRA HIPOTECADA O EN VENTA");
+        if (!jugador.getPropiedades().contains(propiedad)|| propiedad.getEstado() != EstadoPropiedades.COMPRADO){
             return false;
         }
         for (Propiedad propiedadDelBarrio: barrio.getPropiedades()){
             if (propiedadDelBarrio.getConstrucciones() != Construcciones.SIN_CASA){
-                System.out.println("ERROR: HAY CONSTURCCIONES EN LAS CASAS DEL BARRIO. TODAS TIENEN QUE ESTAR SIN CASA");
                 return false;
             }
         }

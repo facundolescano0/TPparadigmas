@@ -15,7 +15,7 @@ import org.example.model.Accion;
 public class JuegoController {
     private final Juego juego;
     private JuegoView vistaJuego;
-    private AdministradorDeMovimientos administradorDeMovimientos;
+
     private Tablero tablero;
     private ConstruccionController controllConstrucciones;
     private FachadaAcciones fachada;
@@ -28,9 +28,9 @@ public class JuegoController {
         this.tablero = juego.getTablero();
         this.vistaJuego = new JuegoView(juego);
         this.controlTablero = new TableroController(tablero);
-        this.administradorDeMovimientos = new AdministradorDeMovimientos(juego.getTablero());
+
         this.controllConstrucciones = new ConstruccionController(tablero.getBarrios());
-        this.funcionesExtras = new FuncionesExtras(juego);
+        this.funcionesExtras = new FuncionesExtras(tablero);
         this.checkGanarJugador= new CheckGanarJugador(tablero);
         this.fachada = new FachadaAcciones(new Hipotecar(funcionesExtras),new Comprar(funcionesExtras),new Vender(funcionesExtras),new ConsultarPrecios(funcionesExtras),new Construir(funcionesExtras),new Deshipotecar(funcionesExtras),new PagarFianza());
     }
@@ -46,25 +46,13 @@ public class JuegoController {
             vistaJuego.mostrarMensaje("El jugador " + jugador.getNombre() + " ha perdido!");
             juego.eliminarJugador(jugador);
             juego.cambiarTurno();
-
         }
     }
 
     private void jugarTurnoPreso(Jugador jugador){
-        Ansi colorANSI = null;
-        Ansi resetColor = Ansi.ansi().reset();
-        FuncionColorPrints funcionColorPrints = new FuncionColorPrints();
-        colorANSI = funcionColorPrints.obtenerColorANSI(jugador.getColor());
-        vistaJuego.mostrarAccionesPreso(jugador.getNombre(), colorANSI, resetColor);
-        Acciones acciones = new Acciones();
-        Scanner scanner = new Scanner(System.in);
-        int numeroElecto = -1;
 
-        while ((numeroElecto != 0) && (numeroElecto != 1) && (jugador.getCondena() != 0)) {
-            vistaJuego.mostrarMensaje("Seleccione la accion que quiere realizar indicando su numero (NUMERO):\n");
-            String accion = scanner.nextLine();
-            numeroElecto = corroboroAccion(accion);
-        }
+
+
         if (numeroElecto == -1) {
             FuncionesExtras.delay(1000);
             vistaJuego.mostrarMensaje("El jugador " + jugador.getNombre() + " complió su condena!");
@@ -93,12 +81,29 @@ public class JuegoController {
     }
 
 
+    private void jugarTurnoJugador(Jugador jugador){
+        //----------------Variables para el color----------------------------
+        Ansi colorANSI = null;
+        Ansi resetColor = Ansi.ansi().reset();
+        FuncionColorPrints funcionColorPrints = new FuncionColorPrints();
+        colorANSI = funcionColorPrints.obtenerColorANSI(jugador.getColor());
+        //-------------------------------------------------------------------
+
+        String accionesDelJugador =  juego.empezarTurno(jugador);
+        vistaJuego.mostrarMensaje(accionesDelJugador);
+        vistaJuego.mostrarMensaje(colorANSI + "Seleccione la accion que quiere realizar indicando su numero (NUMERO):\n" + resetColor);
+        //vistaJuego.mostrarUbicacion(casillaActual, resetColor);
+        juego.realizarJuego(jugador);
+
+    }
+
     private void jugarTurnoLibre(Jugador jugador) {
         int dados = juego.tirarDados();
         Ansi colorANSI = null;
         Ansi resetColor = Ansi.ansi().reset();
         FuncionColorPrints funcionColorPrints = new FuncionColorPrints();
         colorANSI = funcionColorPrints.obtenerColorANSI(jugador.getColor());
+
         vistaJuego.mostrarTurnoLibre(jugador.getNombre(), dados, colorANSI, resetColor);
         int casillaAnterior = jugador.getUbicacion();
         int casillaActual = administradorDeMovimientos.avanzarJugador(jugador, dados);
@@ -154,7 +159,7 @@ public class JuegoController {
 
     private void ejecutarAccion(Accion accionElecta, Jugador jugador) {
             if (accionElecta == Accion.COMPRAR){
-                fachada.comprar(jugador,0,controllConstrucciones);
+                vistaJuego.mostrarMensaje(fachada.comprar(jugador,0,controllConstrucciones));
             }else if (accionElecta != Accion.TERMINAR_TURNO && accionElecta != Accion.PAGAR_FIANZA){
                 CheckStrToInt checkStrToInt = new CheckStrToInt();
                 Scanner scanner = new Scanner(System.in);
@@ -162,15 +167,15 @@ public class JuegoController {
                 String casillero = scanner.nextLine();
                 int numero = (checkStrToInt.checkStringToInt(casillero));
                 switch (accionElecta) {
-                    case CONSTRUIR -> fachada.construir(jugador, numero, controllConstrucciones);
-                    case VENDER -> fachada.vender(jugador, numero, controllConstrucciones);
-                    case HIPOTECAR -> fachada.hipotecar(jugador, numero, controllConstrucciones);
-                    case DESHIPOTECAR -> fachada.deshipotecar(jugador, numero, controllConstrucciones);
-                    case CONSULTAR_PRECIO_CASA -> fachada.consultar_precio_casa(jugador, numero, controllConstrucciones);
+                    case CONSTRUIR -> vistaJuego.mostrarMensaje(fachada.construir(jugador, numero, controllConstrucciones));
+                    case VENDER -> vistaJuego.mostrarMensaje(fachada.vender(jugador, numero, controllConstrucciones));
+                    case HIPOTECAR -> vistaJuego.mostrarMensaje(fachada.hipotecar(jugador, numero, controllConstrucciones));
+                    case DESHIPOTECAR -> vistaJuego.mostrarMensaje(fachada.deshipotecar(jugador, numero, controllConstrucciones));
+                    case CONSULTAR_PRECIO_CASA -> vistaJuego.mostrarMensaje(fachada.consultar_precio_casa(jugador, numero, controllConstrucciones));
                 }
             }
             if (accionElecta == Accion.PAGAR_FIANZA){
-                fachada.pagar_fianza(jugador, tablero.getCarcel());
+                vistaJuego.mostrarMensaje(fachada.pagar_fianza(jugador, tablero.getCarcel()));
             }
     }
 
@@ -211,7 +216,7 @@ public class JuegoController {
         CheckStrToInt checkStrToInt = new CheckStrToInt();
         return checkStrToInt.checkStringToInt(accion);
     }
-    }
+}
 
 
 

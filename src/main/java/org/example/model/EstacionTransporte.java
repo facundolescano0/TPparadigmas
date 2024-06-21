@@ -20,11 +20,12 @@ public class EstacionTransporte extends Comprable{
         }
     }
 
-    public void venderComprable(){
+    public String venderComprable(){
         propietario.sumarPlata(precio);
         propietario.eliminarComprable(this);
-        setPropietario(null);
         this.estado = EstadoPropiedades.EN_VENTA;
+        return setPropietario(null);
+
     }
 
     public String getNombrePropietario() {

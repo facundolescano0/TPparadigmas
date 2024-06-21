@@ -11,10 +11,11 @@ public class Construir implements EjecutarAccion{
         this.funciones = func;
     }
 
-    public void ejecutar(Jugador jugador, int propiedad, ConstruccionController controller) {
+    public String ejecutar(Jugador jugador, int propiedad, ConstruccionController controller) {
         Propiedad prop = funciones.obtenerPropiedadJugador(propiedad, jugador);
         if (prop != null) {
-            controller.construirEnPropiedad(jugador, prop);
+            return controller.construirEnPropiedad(jugador, prop);
         }
+        return null;
     }
 }

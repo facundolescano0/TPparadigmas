@@ -38,6 +38,7 @@ public class CheckArgumentos{
                     System.out.print(argumentos.get(contador));
                     input = scanner.nextLine();
                     isValid = checkNum.checkNumeros(input, configuraciones.get(contador));
+
                 }
             }
             inputs.add(input);
