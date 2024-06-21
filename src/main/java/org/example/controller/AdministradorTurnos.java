@@ -46,7 +46,7 @@ public class AdministradorTurnos {
             this.actual = jugador;
             return;
         }
-        System.out.println(jugador.getNombre() + " perdio!");
+    //    System.out.println(jugador.getNombre() + " perdio!");
         this.jugadores.remove(jugador);
         avanzarTurno();
     }

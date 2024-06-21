@@ -24,5 +24,15 @@ public class Main {
     }
 }
 
+/*
+* COSAS PARA HACER:
+*
+*   - SACAR LOS PRINTS DE LOS LUGARES Q NO CORRESPONDAN
+*   - SACAR LAS ACCIONES DEL CONTRORLADOR.
+*
+*
+*
+* */
+
 
 

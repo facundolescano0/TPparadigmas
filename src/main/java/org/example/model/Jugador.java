@@ -13,6 +13,8 @@ public class Jugador{
     private Estado estado;
     private int condena;
     private double patrimonio;
+    private EstadoAcciones estadoAcciones;
+
 
     public Jugador(String nombre) {
         this.ubicacion = 0;

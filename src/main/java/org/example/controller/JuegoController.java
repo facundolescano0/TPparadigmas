@@ -43,53 +43,51 @@ public class JuegoController {
         } else if(jugador.getEstado() == Estado.Preso){
             jugarTurnoPreso(jugador);
         }else{
+            vistaJuego.mostrarMensaje("El jugador " + jugador.getNombre() + " ha perdido!");
             juego.eliminarJugador(jugador);
             juego.cambiarTurno();
 
         }
     }
 
-
     private void jugarTurnoPreso(Jugador jugador){
         Ansi colorANSI = null;
         Ansi resetColor = Ansi.ansi().reset();
         FuncionColorPrints funcionColorPrints = new FuncionColorPrints();
         colorANSI = funcionColorPrints.obtenerColorANSI(jugador.getColor());
-        vistaJuego.imprimirMensajes(colorANSI+"Es el turno de " + jugador.getNombre() + "\n");
-
+        vistaJuego.mostrarAccionesPreso(jugador.getNombre(), colorANSI, resetColor);
         Acciones acciones = new Acciones();
-        acciones.accionesJugadorPreso(colorANSI,resetColor);
         Scanner scanner = new Scanner(System.in);
         int numeroElecto = -1;
-        while((numeroElecto != 0) && (numeroElecto != 1) && (jugador.getCondena() != 0)){
-            vistaJuego.imprimirMensajes("Seleccione la accion que quiere realizar indicando su numero (NUMERO):\n");
+
+        while ((numeroElecto != 0) && (numeroElecto != 1) && (jugador.getCondena() != 0)) {
+            vistaJuego.mostrarMensaje("Seleccione la accion que quiere realizar indicando su numero (NUMERO):\n");
             String accion = scanner.nextLine();
             numeroElecto = corroboroAccion(accion);
         }
-        if (numeroElecto == -1){
+        if (numeroElecto == -1) {
             FuncionesExtras.delay(1000);
-            vistaJuego.imprimirMensajes("El jugador "+ jugador.getNombre() + " complió su condena!");
+            vistaJuego.mostrarMensaje("El jugador " + jugador.getNombre() + " complió su condena!");
             FuncionesExtras.delay(1000);
             jugador.setEstado(Estado.EnJuego);
-
-        } else if(numeroElecto == 1){
-            Accion accionElecta = acciones.getAccionPreso(numeroElecto);
-            ejecutarAccion(accionElecta,jugador);
+        }else if(numeroElecto == 1) {
+            Accion accionElecta = new Acciones().getAccionPreso(numeroElecto);
+            ejecutarAccion(accionElecta, jugador);
         }else{
             int dados = juego.tirarDados();
             FuncionesExtras.delay(1000);
-            vistaJuego.imprimirMensajes("Saco: " + dados);
+            vistaJuego.mostrarMensaje("Saco: " + dados);
             FuncionesExtras.delay(1500);
-            if(dados > jugador.getCondena()){
+            if (dados > jugador.getCondena()) {
                 jugador.quedaLibre();
-                vistaJuego.imprimirMensajes(jugador.getNombre()+ " queda libre por sacar "+ dados+  " (dados) mayor que el numero de condena ("+ jugador.getCondena()+")");
-            } else {
+                vistaJuego.mostrarMensaje(jugador.getNombre() + " queda libre por sacar " + dados + " (dados) mayor que el numero de condena (" + jugador.getCondena() + ")");
+            }else {
                 jugador.restarCondena();
-                vistaJuego.imprimirMensajes(jugador.getNombre()+ " sigue preso. Ahora su condena es de ("+ jugador.getCondena()+")");
+                vistaJuego.mostrarMensaje(jugador.getNombre() + " sigue preso. Ahora su condena es de (" + jugador.getCondena() + ")");
             }
             FuncionesExtras.delay(1000);
         }
-        if(jugador.getEstado() == Estado.EnJuego){
+        if(jugador.getEstado() == Estado.EnJuego) {
             jugarTurnoLibre(jugador);
         }
     }
@@ -101,53 +99,55 @@ public class JuegoController {
         Ansi resetColor = Ansi.ansi().reset();
         FuncionColorPrints funcionColorPrints = new FuncionColorPrints();
         colorANSI = funcionColorPrints.obtenerColorANSI(jugador.getColor());
-        vistaJuego.imprimirMensajes(String.format(colorANSI + "Es el turno de " + jugador.getNombre() + "\n" + "Te toco el numero: " + dados + "\n"));
+        vistaJuego.mostrarTurnoLibre(jugador.getNombre(), dados, colorANSI, resetColor);
         int casillaAnterior = jugador.getUbicacion();
         int casillaActual = administradorDeMovimientos.avanzarJugador(jugador, dados);
-        vistaJuego.imprimirMensajes(String.format("Usted esta en el casillero: " + casillaActual + "\n" + resetColor));
+        vistaJuego.mostrarUbicacion(casillaActual, resetColor);
         pagarBono(jugador, dados, casillaAnterior);
         Casillero casillero = tablero.getCasillero(casillaActual);
 
         if (casillero.getEsEjecutable()) {
             ejecutar(jugador, casillaActual);
         }
+
         if (jugador.getEstado() == Estado.Preso) return;
         int numeroElecto = 1;
         vistaJuego.mostrar();
         Acciones acciones = new Acciones();
-        vistaJuego.imprimirMensajes(acciones.acciones(colorANSI, resetColor));
+        acciones.acciones(colorANSI, resetColor);
         Scanner scanner = new Scanner(System.in);
         while (numeroElecto != 0) {
-            vistaJuego.imprimirMensajes(String.format(colorANSI + "Seleccione la accion que quiere realizar indicando su numero (NUMERO):\n"+resetColor));
+            vistaJuego.mostrarMensaje(colorANSI + "Seleccione la accion que quiere realizar indicando su numero (NUMERO):\n" + resetColor);
             String accion = scanner.nextLine();
             numeroElecto = corroboroAccion(accion);
             if (numeroElecto == Constantes.NEGATIVO) {
-                vistaJuego.imprimirMensajes("Accion inexistente\n");
-            } else {
+                vistaJuego.mostrarAccionInexistente();
+            }else {
                 Accion accionElecta = acciones.getAccion(numeroElecto);
-                if (accionElecta == null || accionElecta == Accion.PAGAR_FIANZA || accionElecta == Accion.TIRAR_DADOS) {
-                    vistaJuego.imprimirMensajes("Accion inexistente");
-                }else{
-                ejecutarAccion(accionElecta, jugador);
+                if(accionElecta == null || accionElecta == Accion.PAGAR_FIANZA || accionElecta == Accion.TIRAR_DADOS) {
+                    vistaJuego.mostrarAccionInexistente();
+                } else{
+                    ejecutarAccion(accionElecta, jugador);
                 }
             }
         }
         if (jugador.estaEnDeuda()) {
             int ubicacion = jugador.getUbicacion();
-            if (tablero.getCasillero(ubicacion).getTipo() == TipoCasillero.MULTA){
+            if(tablero.getCasillero(ubicacion).getTipo() == TipoCasillero.MULTA) {
                 checkDeudaMulta(jugador);
             }else {
                 Propiedad propiedad = tablero.getPropiedad(ubicacion).getPropiedad();
                 checkDeudaComprable(jugador, propiedad);
             }
         }
-        if (jugador.estaEnQuiebra()) {
-            vistaJuego.imprimirMensajes(String.format("%s perdio!\n" ,jugador.getNombre()));
+        if (jugador.estaEnQuiebra()){
+            vistaJuego.mostrarMensaje(String.format("%s perdio!\n", jugador.getNombre()));
             controlTablero.eliminarPropiedadesDelJugadorEnQuiebra(jugador);
             juego.eliminarJugador(jugador);
             juego.terminado();
         }
-        if (checkGanarJugador.ComprobarGanarJugador(jugador)){
+        if (checkGanarJugador.ComprobarGanarJugador(jugador)) {
+            vistaJuego.mostrarMensaje("\t\t¡¡FELICITACIONES!!\nEl jugador "+ jugador.getNombre() + "ha completado todo un barrio con hoteles. Por eso, HA GANADO");
             juego.terminado();
         }
     }
@@ -158,7 +158,7 @@ public class JuegoController {
             }else if (accionElecta != Accion.TERMINAR_TURNO && accionElecta != Accion.PAGAR_FIANZA){
                 CheckStrToInt checkStrToInt = new CheckStrToInt();
                 Scanner scanner = new Scanner(System.in);
-                vistaJuego.imprimirMensajes("Seleccione el casillero en que se encuentra la propiedad (NUMERO):");
+                vistaJuego.mostrarMensaje("Seleccione el casillero en que se encuentra la propiedad (NUMERO):");
                 String casillero = scanner.nextLine();
                 int numero = (checkStrToInt.checkStringToInt(casillero));
                 switch (accionElecta) {
@@ -177,33 +177,34 @@ public class JuegoController {
     private void pagarBono(Jugador jugador,int dados,int casillaAnterior){
             if((casillaAnterior+dados) >= tablero.getCantidadCasilleros()) {
                 juego.pagarBono(jugador);
+                vistaJuego.mostrarMensaje("¡"+jugador.getNombre()+ " has recibido $"+ Constantes.DINERO_VUELTA + " por dar la vuelta al tablero!");
             }
     }
 
     private void checkDeudaMulta(Jugador jugador) {
         Casillero casilleroDeMulta = tablero.getCasillero(jugador.getUbicacion());
         if(jugador.restarPlata(casilleroDeMulta.getPrecio()) ){
-            vistaJuego.imprimirMensajes("Perfecto! El jugador "+jugador.getNombre() +" pudo pagar su multa!");
+            vistaJuego.mostrarMensaje("Perfecto! El jugador " + jugador.getNombre() + " pudo pagar su multa!");
             jugador.setEstado(Estado.EnJuego);
         }else{
-            vistaJuego.imprimirMensajes("EL JUGADOR "+ jugador.getNombre()+" NO PAGO SU MULTA! ENTRÓ EN BANCARROTA");
+            vistaJuego.mostrarMensaje("EL JUGADOR " + jugador.getNombre() + " NO PAGO SU MULTA! ENTRÓ EN BANCARROTA");
             jugador.setQuiebra();
         }
     }
 
     private void checkDeudaComprable(Jugador jugador,Propiedad propiedad){
         if (jugador.restarPlata(propiedad.getAlquiler())){
-            vistaJuego.imprimirMensajes("Perfecto! El jugador "+jugador.getNombre() +" pudo pagar su deuda!");
+            vistaJuego.mostrarMensaje("Perfecto! El jugador " + jugador.getNombre() + " pudo pagar su deuda!");
             jugador.setEstado(Estado.EnJuego);
         }else{
-            vistaJuego.imprimirMensajes("EL JUGADOR "+ jugador.getNombre()+" NO PAGO SU DEUDA! ENTRÓ EN BANCARROTA");
+            vistaJuego.mostrarMensaje("EL JUGADOR " + jugador.getNombre() + " NO PAGO SU DEUDA! ENTRÓ EN BANCARROTA");
             jugador.setQuiebra();
         }
     }
 
     private void ejecutar(Jugador jugador, int ubicacionJugador){
         CasilleroEjecutable casillero = tablero.getCasilleroEjecutable(ubicacionJugador);
-        vistaJuego.imprimirMensajes(casillero.ejecutarCasillero(jugador));
+        vistaJuego.mostrarMensaje(casillero.ejecutarCasillero(jugador));
     }
 
     private int corroboroAccion(String accion) {

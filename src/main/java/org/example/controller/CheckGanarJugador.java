@@ -26,7 +26,7 @@ public class CheckGanarJugador {
                     }
                 }
                 if (todasPropiedadesEnHotel) {
-                    System.out.println("\t\t¡¡FELICITACIONES!!\nEl jugador "+ jugador.getNombre() + "ha completado todo un barrio con hoteles. Por eso, HA GANADO");
+            //        System.out.println("\t\t¡¡FELICITACIONES!!\nEl jugador "+ jugador.getNombre() + "ha completado todo un barrio con hoteles. Por eso, HA GANADO");
                     jugador.setEstado(Estado.Gano);
                     return true;
                 }
