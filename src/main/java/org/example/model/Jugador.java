@@ -47,7 +47,7 @@ public class Jugador{
                 break;
             case CON_CASA:
                 mensaje = acciones.accionesJugadorConPropiedad(colorANSI, resetColor);
-                break; // Falta el 'break' aquí
+                break;
             case PRESO:
                 mensaje = acciones.accionesJugadorPreso(colorANSI, resetColor);
                 break;

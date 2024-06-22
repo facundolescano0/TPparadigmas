@@ -10,6 +10,19 @@ public class Acciones {
         return null;
     }
 
+
+    public String accionesDisponibles(Ansi colorANSI,Ansi resetColor,EstadoAcciones acciones) {
+        if (acciones == EstadoAcciones.CON_BARRIO) {
+            return accionesJugadorConBarrio(colorANSI, resetColor);
+        } else if (acciones == EstadoAcciones.CON_CASA) {
+            return accionesJugadorConPropiedad(colorANSI, resetColor);
+        } else if (acciones == EstadoAcciones.SIN_PROPIEADES) {
+            return accionesJugadorSinPropiedad(colorANSI, resetColor);
+        } else {
+            return null;
+        }
+    }
+
     public String acciones(Ansi colorANSI,Ansi resetColor){
         String mensaje = "";
         for (int i = 0; i < Accion.values().length-2; i++){

@@ -35,6 +35,13 @@ public class JuegoController {
         this.fachada = new FachadaAcciones(new Hipotecar(funcionesExtras),new Comprar(funcionesExtras),new Vender(funcionesExtras),new ConsultarPrecios(funcionesExtras),new Construir(funcionesExtras),new Deshipotecar(funcionesExtras),new PagarFianza());
     }
 
+
+    public void jugarTurno() throws IOException {
+        juego.cambiarTurno();
+        Jugador jugador = juego.getJugadorActual();
+        vistaJuego.mostrarMensaje(juego.realizarJuego(jugador));
+    }
+/*
     public void jugarTurno() throws IOException {
         juego.cambiarTurno();
         Jugador jugador = juego.getJugadorActual();
@@ -50,8 +57,6 @@ public class JuegoController {
     }
 
     private void jugarTurnoPreso(Jugador jugador){
-
-
 
         if (numeroElecto == -1) {
             FuncionesExtras.delay(1000);
@@ -79,6 +84,7 @@ public class JuegoController {
             jugarTurnoLibre(jugador);
         }
     }
+*/
 
 
     private void jugarTurnoJugador(Jugador jugador){
