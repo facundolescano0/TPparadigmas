@@ -4,9 +4,11 @@ import org.example.funciones.FuncionColorPrints;
 import org.example.funciones.FuncionesExtras;
 import org.example.model.*;
 import org.example.model.tipoCasilleros.*;
+import org.example.view.TableroView;
 import org.fusesource.jansi.Ansi;
 import org.example.view.JuegoView;
 import java.io.IOException;
+import org.example.funciones.FuncionColorPrints;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -15,32 +17,49 @@ import org.example.model.Accion;
 public class JuegoController {
     private final Juego juego;
     private JuegoView vistaJuego;
-
+    private TableroView tableroView;
     private Tablero tablero;
     private ConstruccionController controllConstrucciones;
     private FachadaAcciones fachada;
-    private TableroController controlTablero;
     private FuncionesExtras funcionesExtras;
-    private CheckGanarJugador checkGanarJugador;
+
 
     public JuegoController(Juego juego) throws IOException {
         this.juego = juego;
         this.tablero = juego.getTablero();
         this.vistaJuego = new JuegoView(juego);
-        this.controlTablero = new TableroController(tablero);
+        this.tableroView = new TableroView(tablero);
 
         this.controllConstrucciones = new ConstruccionController(tablero.getBarrios());
         this.funcionesExtras = new FuncionesExtras(tablero);
-        this.checkGanarJugador= new CheckGanarJugador(tablero);
+        //this.checkGanarJugador= new CheckGanarJugador(tablero);
         this.fachada = new FachadaAcciones(new Hipotecar(funcionesExtras),new Comprar(funcionesExtras),new Vender(funcionesExtras),new ConsultarPrecios(funcionesExtras),new Construir(funcionesExtras),new Deshipotecar(funcionesExtras),new PagarFianza());
     }
 
-
-    public void jugarTurno() throws IOException {
+  public void jugarTurno() throws IOException {
         juego.cambiarTurno();
         Jugador jugador = juego.getJugadorActual();
+        tableroView.mostrar(juego.getJugadores());
+        //vistaJuego.mostrarTurnoLibre(jugador.getNombre(), dados, colorANSI, resetColor);
+        vistaJuego.mostrarMensaje(juego.empezarTurno(jugador));
         vistaJuego.mostrarMensaje(juego.realizarJuego(jugador));
+
     }
+    /*
+    public int moverJugador(Jugador jugador, int dados){
+        //----------------------------------------------------------------
+        Ansi colorANSI = null;
+        Ansi resetColor = Ansi.ansi().reset();
+        FuncionColorPrints funcionColorPrints = new FuncionColorPrints();
+        colorANSI = funcionColorPrints.obtenerColorANSI(jugador.getColor());
+        //----------------------------------------------------------------
+
+
+        int casillaAnterior = jugador.getUbicacion();
+        int casillaActual = administradorDeMovimientos.avanzarJugador(jugador, dados);
+        vistaJuego.mostrarUbicacion(casillaActual, resetColor);
+        //pagarBono(jugador, dados, casillaAnterior);
+    }*/
 /*
     public void jugarTurno() throws IOException {
         juego.cambiarTurno();
@@ -87,7 +106,7 @@ public class JuegoController {
 */
 
 
-    private void jugarTurnoJugador(Jugador jugador){
+/*    private void jugarTurnoJugador(Jugador jugador){
         //----------------Variables para el color----------------------------
         Ansi colorANSI = null;
         Ansi resetColor = Ansi.ansi().reset();
@@ -101,7 +120,8 @@ public class JuegoController {
         //vistaJuego.mostrarUbicacion(casillaActual, resetColor);
         juego.realizarJuego(jugador);
 
-    }
+    }*/
+/*
 
     private void jugarTurnoLibre(Jugador jugador) {
         int dados = juego.tirarDados();
@@ -162,8 +182,9 @@ public class JuegoController {
             juego.terminado();
         }
     }
+*/
 
-    private void ejecutarAccion(Accion accionElecta, Jugador jugador) {
+/*    private void ejecutarAccion(Accion accionElecta, Jugador jugador) {
             if (accionElecta == Accion.COMPRAR){
                 vistaJuego.mostrarMensaje(fachada.comprar(jugador,0,controllConstrucciones));
             }else if (accionElecta != Accion.TERMINAR_TURNO && accionElecta != Accion.PAGAR_FIANZA){
@@ -183,9 +204,9 @@ public class JuegoController {
             if (accionElecta == Accion.PAGAR_FIANZA){
                 vistaJuego.mostrarMensaje(fachada.pagar_fianza(jugador, tablero.getCarcel()));
             }
-    }
+    }*/
 
-    private void pagarBono(Jugador jugador,int dados,int casillaAnterior){
+/*    private void pagarBono(Jugador jugador,int dados,int casillaAnterior){
             if((casillaAnterior+dados) >= tablero.getCantidadCasilleros()) {
                 juego.pagarBono(jugador);
                 vistaJuego.mostrarMensaje("¡"+jugador.getNombre()+ " has recibido $"+ Constantes.DINERO_VUELTA + " por dar la vuelta al tablero!");
@@ -221,7 +242,7 @@ public class JuegoController {
     private int corroboroAccion(String accion) {
         CheckStrToInt checkStrToInt = new CheckStrToInt();
         return checkStrToInt.checkStringToInt(accion);
-    }
+    }*/
 }
 
 

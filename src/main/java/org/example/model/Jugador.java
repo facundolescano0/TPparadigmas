@@ -37,9 +37,8 @@ public class Jugador{
 
     }
 
-    public String obtenerAccionesDisponibles(){
+        public String obtenerAccionesDisponibles(Ansi colorANSI){
         String mensaje = "";
-        Ansi colorANSI = null;
         Ansi resetColor = Ansi.ansi().reset();
         switch (estadoAcciones) {
             case CON_BARRIO:

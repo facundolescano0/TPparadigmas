@@ -9,6 +9,7 @@ import org.example.funciones.FuncionesExtras;
 import org.example.funciones.FuncionColorPrints;
 import org.example.model.tipoCasilleros.Casillero;
 import org.example.model.tipoCasilleros.CasilleroEjecutable;
+import org.example.model.tipoCasilleros.DePaso;
 import org.example.model.tipoCasilleros.TipoCasillero;
 import org.fusesource.jansi.Ansi;
 
@@ -21,6 +22,7 @@ public class Juego {
     private Banco banco;
     private FachadaAcciones fachada;
     private FuncionesExtras funcionesExtras;
+    private ConstruccionController construccionesController;
 
 
     public Juego(List<String> configuraciones){
@@ -32,8 +34,8 @@ public class Juego {
         this.banco = new Banco(configuracion.getMontoVuelta());
         this.administradorDeMovimientos = new AdministradorDeMovimientos(tablero);
         this.funcionesExtras = new FuncionesExtras(tablero);
+        this.construccionesController = new ConstruccionController(tablero.getBarrios());
         this.fachada = new FachadaAcciones(new Hipotecar(funcionesExtras),new Comprar(funcionesExtras),new Vender(funcionesExtras),new ConsultarPrecios(funcionesExtras),new Construir(funcionesExtras),new Deshipotecar(funcionesExtras),new PagarFianza());
-
     }
 
     public Jugador getJugadorActual() {
@@ -81,25 +83,32 @@ public class Juego {
         Ansi resetColor = Ansi.ansi().reset();
         FuncionColorPrints funcionColorPrints = new FuncionColorPrints();
         colorANSI = funcionColorPrints.obtenerColorANSI(jugador.getColor());
-        String acciones = jugador.obtenerAccionesDisponibles();
+        String acciones = jugador.obtenerAccionesDisponibles(colorANSI);
         return acciones;
     }
 
     //devuelve la casilla actual del jugador
     public int moverJugador(Jugador jugador, int dados){
+        //----------------------------------------------------------------
+        Ansi colorANSI = null;
+        Ansi resetColor = Ansi.ansi().reset();
+        FuncionColorPrints funcionColorPrints = new FuncionColorPrints();
+        colorANSI = funcionColorPrints.obtenerColorANSI(jugador.getColor());
+        //----------------------------------------------------------------
+
         //vistaJuego.mostrarTurnoLibre(jugador.getNombre(), dados, colorANSI, resetColor);
-        int casillaAnterior = jugador.getUbicacion();
         int casillaActual = administradorDeMovimientos.avanzarJugador(jugador, dados);
         //vistaJuego.mostrarUbicacion(casillaActual, resetColor);
-        pagarBono(jugador, dados, casillaAnterior);
+        pagarBono(jugador);
         return casillaActual;
     }
-    public void ejecutarCasillero(Jugador jugador,int casillaActual){
+    public String ejecutarCasillero(Jugador jugador,int casillaActual){
         Casillero casillero = tablero.getCasillero(casillaActual);
         if (casillero.getEsEjecutable()) {
-            CasilleroEjecutable casillero = tablero.getCasilleroEjecutable(casillaActual);
-            //vistaJuego.mostrarMensaje(casillero.ejecutarCasillero(jugador));
+            CasilleroEjecutable casilla = tablero.getCasilleroEjecutable(casillaActual);
+            return (casilla.ejecutarCasillero(jugador) + "ejecutar casillero");
         }
+        return "ejecutar casillero";
     }
 
 //    private void ejecutar(Jugador jugador, int ubicacionJugador){
@@ -111,54 +120,59 @@ public class Juego {
         Scanner scanner = new Scanner(System.in);
         int numeroElecto = 1;
         while (numeroElecto != 0) {
-            //vistaJuego.mostrarMensaje(colorANSI + "Seleccione la accion que quiere realizar indicando su numero (NUMERO):\n" + resetColor);
             String accion = scanner.nextLine();
             numeroElecto = corroboroAccion(accion);
+            String accionesDisponibles = empezarTurno(jugador);
+            Acciones acciones = new Acciones();
             if (numeroElecto != Constantes.NEGATIVO) {
                 Accion accionElecta = acciones.getAccion(numeroElecto);
                 if(accionElecta == null || accionElecta == Accion.PAGAR_FIANZA || accionElecta == Accion.TIRAR_DADOS) {
                     //vistaJuego.mostrarAccionInexistente();
                 } else{
-                    ejecutarAccion(accionElecta, jugador);
+                    return ejecutarAccion(accionElecta, jugador);
                 }
             }
-        }if (jugador.estaEnDeuda()) {
+        }
+        if (jugador.estaEnDeuda()) {
             int ubicacion = jugador.getUbicacion();
             if(tablero.getCasillero(ubicacion).getTipo() == TipoCasillero.MULTA) {
-                checkDeudaMulta(jugador);
+                return checkDeudaMulta(jugador);
             }else {
                 Propiedad propiedad = tablero.getPropiedad(ubicacion).getPropiedad();
-                checkDeudaComprable(jugador, propiedad);
+                return checkDeudaComprable(jugador, propiedad);
             }
-        }if (jugador.estaEnQuiebra()){
-            vistaJuego.mostrarMensaje(String.format("%s perdio!\n", jugador.getNombre()));
-            controlTablero.eliminarPropiedadesDelJugadorEnQuiebra(jugador);
-            juego.eliminarJugador(jugador);
-            juego.terminado();
+        }else if (jugador.estaEnQuiebra()){
+            String mensaje = (jugador.getNombre() + " perdio!\n");
+            eliminarPropiedadesDelJugadorEnQuiebra(jugador);
+            eliminarJugador(jugador);
+            return  mensaje;
+        }else if (ComprobarGanarJugador(jugador)) {
+            return("\t\t¡¡FELICITACIONES!!\nEl jugador "+ jugador.getNombre() + "ha completado todo un barrio con hoteles. Por eso, HA GANADO");
         }
-        if (checkGanarJugador.ComprobarGanarJugador(jugador)) {
-            vistaJuego.mostrarMensaje("\t\t¡¡FELICITACIONES!!\nEl jugador "+ jugador.getNombre() + "ha completado todo un barrio con hoteles. Por eso, HA GANADO");
-            this.terminado();
-        }
+        return null;
     }
 
+
+
     public String realizarJuego(Jugador jugador){
+
+
         if (jugador.getEstado().equals(Estado.Preso)){
-            return jugador.obtenerAccionesDisponibles() + juegoDePreso(jugador);
+            return juegoDePreso(jugador);
         }
         else{
-            return jugador.obtenerAccionesDisponibles() + juegoDeLibre(jugador);
+            return  juegoDeLibre(jugador);
         }
     }
 
     public String juegoDeLibre(Jugador jugador){
         int dados = tirarDados();
         int casillaActual = moverJugador(jugador,dados);
-        ejecutarCasillero(jugador,casillaActual);
+        String mensaje = ejecutarCasillero(jugador,casillaActual);
         //String accionesDisponibles = empezarTurno(jugador);
         //Acciones acciones = new Acciones(); // ENLAZAR CON ACCIONES DISPONIBLES
         //acciones.accionesDisponibles(colorANSI, resetColor,jugador.getEstadoAcciones
-        return ("Seleccione la accion que quiere realizar indicando su numero (NUMERO):\n") + evaluarAcciones(jugador);
+        return mensaje + ("Seleccione la accion que quiere realizar indicando su numero (NUMERO):\n") + evaluarAcciones(jugador);
     }
 
     private String juegoDePreso(Jugador jugador){
@@ -169,11 +183,9 @@ public class Juego {
             numeroElecto = corroboroAccion(accion);
         }
         if (numeroElecto == -1) {
-            FuncionesExtras.delay(1000);
-    //        vistaJuego.mostrarMensaje("El jugador " + jugador.getNombre() + " complió su condena!");
-            FuncionesExtras.delay(1000);
             jugador.setEstado(Estado.EnJuego);
             jugador.actualizarEstadoAcciones();
+            return ("El jugador " + jugador.getNombre() + " complió su condena!");
 
         }else if(numeroElecto == 1) {
             Accion accionElecta = new Acciones().getAccionPreso(numeroElecto);
@@ -181,20 +193,18 @@ public class Juego {
         }else{
             int dados = tirarDados();
             FuncionesExtras.delay(1000);
-    //        vistaJuego.mostrarMensaje("Saco: " + dados);
-            FuncionesExtras.delay(1500);
+            String mensaje = ("Saco: " + dados + "\n") ;
             if (dados > jugador.getCondena()) {
                 jugador.quedaLibre();
-    //            vistaJuego.mostrarMensaje(jugador.getNombre() + " queda libre por sacar " + dados + " (dados) mayor que el numero de condena (" + jugador.getCondena() + ")");
+               mensaje += (jugador.getNombre() + " queda libre por sacar " + dados + " (dados) mayor que el numero de condena (" + jugador.getCondena() + ")");
+               return mensaje;
             }else {
                 jugador.restarCondena();
-    //            vistaJuego.mostrarMensaje(jugador.getNombre() + " sigue preso. Ahora su condena es de (" + jugador.getCondena() + ")");
+                mensaje += (jugador.getNombre() + " sigue preso. Ahora su condena es de (" + jugador.getCondena() + ")");
+                return mensaje;
             }
-            FuncionesExtras.delay(1000);
         }
-
     }
-
 
     private int corroboroAccion(String accion) {
         CheckStrToInt checkStrToInt = new CheckStrToInt();
@@ -204,19 +214,29 @@ public class Juego {
 
     private String ejecutarAccion(Accion accionElecta, Jugador jugador) {
         if (accionElecta == Accion.COMPRAR){
-            return (fachada.comprar(jugador,0,controllConstrucciones));
+            return (fachada.comprar(jugador,0,construccionesController));
         }else if (accionElecta != Accion.TERMINAR_TURNO && accionElecta != Accion.PAGAR_FIANZA){
             CheckStrToInt checkStrToInt = new CheckStrToInt();
             Scanner scanner = new Scanner(System.in);
-            vistaJuego.mostrarMensaje("Seleccione el casillero en que se encuentra la propiedad (NUMERO):");
+            System.out.println("Seleccione el casillero en que se encuentra la propiedad (NUMERO):");
             String casillero = scanner.nextLine();
             int numero = (checkStrToInt.checkStringToInt(casillero));
             switch (accionElecta) {
-                case CONSTRUIR -> vistaJuego.mostrarMensaje(fachada.construir(jugador, numero, controllConstrucciones));
-                case VENDER -> vistaJuego.mostrarMensaje(fachada.vender(jugador, numero, controllConstrucciones));
-                case HIPOTECAR -> vistaJuego.mostrarMensaje(fachada.hipotecar(jugador, numero, controllConstrucciones));
-                case DESHIPOTECAR -> vistaJuego.mostrarMensaje(fachada.deshipotecar(jugador, numero, controllConstrucciones));
-                case CONSULTAR_PRECIO_CASA -> vistaJuego.mostrarMensaje(fachada.consultar_precio_casa(jugador, numero, controllConstrucciones));
+                case CONSTRUIR -> {
+                    return (fachada.construir(jugador, numero, construccionesController));
+                }
+                case VENDER -> {
+                    return (fachada.vender(jugador, numero, construccionesController));
+                }
+                case HIPOTECAR -> {
+                    return (fachada.hipotecar(jugador, numero, construccionesController));
+                }
+                case DESHIPOTECAR -> {
+                    return (fachada.deshipotecar(jugador, numero, construccionesController));
+                }
+                case CONSULTAR_PRECIO_CASA -> {
+                    return (fachada.consultar_precio_casa(jugador, numero, construccionesController));
+                }
             }
         }
         else if (accionElecta == Accion.PAGAR_FIANZA){
@@ -224,4 +244,63 @@ public class Juego {
         }
         return null;
     }
+
+        private String checkDeudaMulta(Jugador jugador) {
+        Casillero casilleroDeMulta = tablero.getCasillero(jugador.getUbicacion());
+        if(jugador.restarPlata(casilleroDeMulta.getPrecio()) ){
+            jugador.setEstado(Estado.EnJuego);
+            return ("Perfecto! El jugador " + jugador.getNombre() + " pudo pagar su multa!");
+
+        }else{
+            jugador.setQuiebra();
+            return ("EL JUGADOR " + jugador.getNombre() + " NO PAGO SU MULTA! ENTRÓ EN BANCARROTA");
+
+        }
+    }
+
+    private String checkDeudaComprable(Jugador jugador,Propiedad propiedad){
+        if (jugador.restarPlata(propiedad.getAlquiler())){
+            jugador.setEstado(Estado.EnJuego);
+            return ("Perfecto! El jugador " + jugador.getNombre() + " pudo pagar su deuda!");
+
+        }else{
+            jugador.setQuiebra();
+            return ("EL JUGADOR " + jugador.getNombre() + " NO PAGO SU DEUDA! ENTRÓ EN BANCARROTA");
+
+        }
+    }
+
+    public boolean ComprobarGanarJugador(Jugador jugador) {
+        ArrayList<Barrio> barrios = tablero.getBarrios();
+        ArrayList<Propiedad> propiedadesJugador = jugador.getPropiedades();
+        for (Barrio barrio : barrios) {
+            ArrayList<Propiedad> propiedadesBarrio = barrio.getPropiedades();
+            boolean todasPropiedadesPertenecenAJugador = propiedadesJugador.containsAll(propiedadesBarrio);
+            if (todasPropiedadesPertenecenAJugador) {
+                boolean todasPropiedadesEnHotel = true;
+                for (Propiedad propiedad : propiedadesBarrio) {
+                    if (propiedad.getConstrucciones() != Construcciones.HOTEL) {
+                        todasPropiedadesEnHotel = false;
+                        break;
+                    }
+                }
+                if (todasPropiedadesEnHotel) {
+                    jugador.setEstado(Estado.Gano);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void eliminarPropiedadesDelJugadorEnQuiebra(Jugador jugador){
+        ArrayList<Propiedad> propiedades = jugador.getPropiedades();
+        for (Propiedad propiedad : propiedades) {
+            propiedad.setPropietario(null);
+            int ubicacion = propiedad.getUbicacion();
+            DePaso NuevoCasilleroDePaso = new DePaso(ubicacion);
+            tablero.getTodosLosCasilleros()[ubicacion] =   NuevoCasilleroDePaso;
+        }
+    }
+
 }
