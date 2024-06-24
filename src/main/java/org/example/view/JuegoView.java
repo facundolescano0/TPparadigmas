@@ -37,6 +37,10 @@ public class JuegoView {
         acciones.accionesJugadorPreso(colorANSI, resetColor);
     }
 
+    public void mostrarFinTurno(Jugador jugador){
+        System.out.println("Finalizó el turno de " + jugador.getNombre());
+    }
+
     public void mostrarTurnoLibre(String nombreJugador, int dados, Ansi colorANSI, Ansi resetColor) {
         System.out.println(colorANSI + "Es el turno de " + nombreJugador + "\n" + "Tus dados son: " + dados + "\n");
     }

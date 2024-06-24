@@ -21,6 +21,8 @@ public class Jugador{
     private EstadoAcciones estadoAcciones;
     private Acciones acciones;
     private String textoAcciones;
+    private boolean estaJugando;
+
 
 
     public Jugador(String nombre) {
@@ -34,29 +36,46 @@ public class Jugador{
         this.estadoAcciones = EstadoAcciones.SIN_PROPIEADES;
         this.acciones = new Acciones();
         this.textoAcciones= "";
+        this.estaJugando = false;
 
     }
 
-        public String obtenerAccionesDisponibles(Ansi colorANSI){
-        String mensaje = "";
-        Ansi resetColor = Ansi.ansi().reset();
-        switch (estadoAcciones) {
-            case CON_BARRIO:
-                mensaje = acciones.accionesJugadorConBarrio(colorANSI, resetColor);
-                break;
-            case CON_CASA:
-                mensaje = acciones.accionesJugadorConPropiedad(colorANSI, resetColor);
-                break;
-            case PRESO:
-                mensaje = acciones.accionesJugadorPreso(colorANSI, resetColor);
-                break;
-            case SIN_PROPIEADES:
-                mensaje = acciones.accionesJugadorSinPropiedad(colorANSI, resetColor);
-                break;
-            default:
-                break;
-        }
-        return mensaje;
+
+
+
+    public void setEstaJugando(){
+        this.estaJugando =true;
+    }
+
+    public void setTerminoDeJugar(){
+        this.estaJugando = false;
+
+    }
+
+    public boolean getEstaJugando(){
+        return this.estaJugando;
+    }
+
+    public String obtenerAccionesDisponibles(Ansi colorANSI){
+    String mensaje = "";
+    Ansi resetColor = Ansi.ansi().reset();
+    switch (estadoAcciones) {
+        case CON_BARRIO:
+            mensaje = acciones.accionesJugadorConBarrio(colorANSI, resetColor);
+            break;
+        case CON_CASA:
+            mensaje = acciones.accionesJugadorConPropiedad(colorANSI, resetColor);
+            break;
+        case PRESO:
+            mensaje = acciones.accionesJugadorPreso(colorANSI, resetColor);
+            break;
+        case SIN_PROPIEADES:
+            mensaje = acciones.accionesJugadorSinPropiedad(colorANSI, resetColor);
+            break;
+        default:
+            break;
+    }
+    return mensaje;
     }
 
     public EstadoAcciones getEstadoAcciones(){

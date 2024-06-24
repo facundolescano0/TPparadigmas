@@ -39,11 +39,25 @@ public class JuegoController {
   public void jugarTurno() throws IOException {
         juego.cambiarTurno();
         Jugador jugador = juego.getJugadorActual();
-        tableroView.mostrar(juego.getJugadores());
-        //vistaJuego.mostrarTurnoLibre(jugador.getNombre(), dados, colorANSI, resetColor);
-        vistaJuego.mostrarMensaje(juego.empezarTurno(jugador));
-        vistaJuego.mostrarMensaje(juego.realizarJuego(jugador));
 
+        int dados = juego.tirarDados();
+        vistaJuego.mostrarMensaje("El jugador " + jugador.getNombre() + " ha sacado " + dados);
+        juego.avanzarJugador(jugador, dados);
+        tableroView.mostrar(juego.getJugadores());
+
+        jugador.setEstaJugando();
+        while (jugador.getEstaJugando()){
+            /*separar en modulos empezarTurnos y realizarJuego para poder manejar mejor los systems out
+            tirar dados -> ejecutarCasillero,(separado) elegir numero usuario -> realizarAcciones.
+             */
+            vistaJuego.mostrarMensaje(juego.empezarTurno(jugador));
+
+            vistaJuego.mostrarMensaje(juego.realizarJuego(jugador));
+
+
+
+        }
+        vistaJuego.mostrarFinTurno(jugador);
     }
     /*
     public int moverJugador(Jugador jugador, int dados){
