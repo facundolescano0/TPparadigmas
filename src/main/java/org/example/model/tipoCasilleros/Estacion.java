@@ -24,12 +24,7 @@ public class Estacion extends Casillero implements CasilleroEjecutable{
         if (estacion.getEstado() == EstadoPropiedades.COMPRADO && propietario != jugador) {
             if(jugador.getPatrimonioTotal() < estacion.getAlquiler()) {
                 jugador.setQuiebra();
-<<<<<<< HEAD
-                return ("\n EL JUGADOR " + jugador.getNombre() + "ENTRÓ EN BANCARROTA. SIN DINERO SUFICIENTE.");
-
-=======
                 return ("EL JUGADOR " + jugador.getNombre() + "ENTRÓ EN BANCARROTA. SIN DINERO SUFICIENTE.");
->>>>>>> CorreccionTP1
             }else{
                 double alquiler = estacion.getAlquiler();
                 propietario.sumarPlata(alquiler);
@@ -37,12 +32,7 @@ public class Estacion extends Casillero implements CasilleroEjecutable{
                     return String.format("%s pagaste %f de alquiler por estar en la estacion de %s\n",jugador.getNombre(),alquiler,estacion.getNombrePropietario());
                 }else{
                     jugador.setDeuda();
-<<<<<<< HEAD
-                    return (jugador.getNombre() +"¡no tienes dinero suficiente para pagar el alquiler de esta estacion!\n\tDEBES HIPOTECAR SI O SI ANTES DE AVANZAR, SINO VA A PERDER\n Antes de avanzar el turno debes tener $" + estacion.getPrecio() + " sino perderás automaticamente. La deuda se paga al final de su turno.");
-
-=======
                     return jugador.getNombre() +"¡no tienes dinero suficiente para pagar el alquiler de esta estacion!\n\tDEBES HIPOTECAR SI O SI ANTES DE AVANZAR, SINO VA A PERDER";
->>>>>>> CorreccionTP1
                 }
             }
         }

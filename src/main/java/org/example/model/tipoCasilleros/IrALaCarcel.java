@@ -22,9 +22,5 @@ public class IrALaCarcel extends Casillero implements CasilleroEjecutable{
         jugador.setCondena(duracionPena);
         jugador.setUbicacion(ubicacionCarcel);
         return String.format("Ups! %s se va preso %d turnos\n", jugador.getNombre(), duracionPena);
-<<<<<<< HEAD
-
-=======
->>>>>>> CorreccionTP1
     }
 }

@@ -15,11 +15,6 @@ public class DeLoteria extends Casillero implements CasilleroEjecutable{
         int dineroInicialInt = (int) dineroIncial;
         int randomNumber = random.nextInt(0,dineroInicialInt);
         jugador.sumarPlata(randomNumber);
-<<<<<<< HEAD
-        return ("Felicitaciones, ganaste! $" + randomNumber + " pesos");
-
-=======
         return "Felicitaciones, ganaste! $" + randomNumber + " pesos";
->>>>>>> CorreccionTP1
     }
 }
