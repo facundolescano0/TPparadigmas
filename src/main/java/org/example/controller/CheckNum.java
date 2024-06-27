@@ -1,8 +1,5 @@
 package org.example.controller;
 
-import org.example.model.tipoCasilleros.Casillero;
-import org.example.controller.ConfiguracionCheckArgumentos;
-
 public class CheckNum {
     public boolean checkNumeros(String cantidad, ConfiguracionCheckArgumentos config) {
         CheckStrToInt checkStrToInt = new CheckStrToInt();

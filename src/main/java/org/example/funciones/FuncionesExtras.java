@@ -4,13 +4,11 @@ import org.example.model.*;
 import org.example.model.tipoCasilleros.DePropiedad;
 import org.example.model.tipoCasilleros.Estacion;
 import org.example.model.tipoCasilleros.TipoCasillero;
-
 import java.util.List;
 
 
 public class FuncionesExtras {
     private Tablero tablero;
-
 
     public FuncionesExtras(Tablero tablero) {
         this.tablero = tablero;
@@ -33,6 +31,7 @@ public class FuncionesExtras {
                 e.printStackTrace();
             }
         }
+        System.out.println("");
     }
 
     public Propiedad obtenerPropiedad(int casillero) {
@@ -40,6 +39,7 @@ public class FuncionesExtras {
             DePropiedad casilleroPropiedad = tablero.getPropiedad(casillero);
             return casilleroPropiedad.getPropiedad();
         }
+        System.out.println("Accion imposible de realizar");
         return null;
     }
 
@@ -58,6 +58,7 @@ public class FuncionesExtras {
 
     public Comprable obtenerComprable(int casillero) {
         if(!esComprable(casillero)){
+            System.out.println("Accion imposible de realizar");
             return null;
         }
         Comprable comprable = null;
@@ -75,6 +76,11 @@ public class FuncionesExtras {
         Comprable comprable = obtenerComprable(casillero);
         if(comprable != null && comprable.getPropietario()==jugador){
             return comprable;
+        }
+        if (comprable == null){
+            System.out.println("El casillero no es un objeto comprable.");
+        }else{
+            System.out.println("El jugador " + jugador.getNombre() + " no es dueño de esta ubicación");
         }
         return null;
     }

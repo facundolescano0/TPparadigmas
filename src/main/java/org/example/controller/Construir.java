@@ -15,7 +15,8 @@ public class Construir implements EjecutarAccion{
         Propiedad prop = funciones.obtenerPropiedadJugador(propiedad, jugador);
         if (prop != null) {
             return controller.construirEnPropiedad(jugador, prop);
+        }else{
+            return "Accion imposible de realizar";
         }
-        return null;
     }
 }

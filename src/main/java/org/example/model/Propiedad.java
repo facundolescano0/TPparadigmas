@@ -34,12 +34,12 @@ public class Propiedad extends Comprable {
         if (this.propietario == null) {
             this.propietario = propietario;
             this.estado = EstadoPropiedades.COMPRADO;
-            propietario.agregarPropiedad(this);
+            propietario.agregarComprable(this);
             propietario.restarPlata(precio);
-            return ("Propiedad comprada con exito" + "\n Le quedan $" + propietario.getPlata());
+            return "Propiedad comprada con exito \n Le quedan $" + propietario.getPlata();
         }
         if (propietario!= null){
-            return ("La propiedad ya fue comprada");
+            return "La propiedad ya fue comprada";
         }
         return null;
     }
@@ -68,28 +68,26 @@ public class Propiedad extends Comprable {
 
     public String hipotecar(Barrio barrio, Jugador jugador) {
         CheckHipotecar controladorHipoteca = new CheckHipotecar(jugador, barrio, this);
-        String mensaje;
         if (controladorHipoteca.validarHipotecar()) {
-            mensaje = "PROPIEDAD " + this.ubicacion + " FUE HIPOTECADA CON ÉXITO.\nSe le reintegró el 60% de la propiedad" + "\n" + "Ahora tienes $"+ jugador.getPlata();
             ponerEnHipoteca();
             jugador.sumarPlata(this.getPrecio()*Constantes.PORCENTAJE_HIPOTECA);
-            jugador.restarPatrimonio(this.getPrecio());;
-            return mensaje;
-        }else{
-            return "Error al hipotecar";
+            jugador.restarPatrimonio(this.getPrecio());
+            return "PROPIEDAD " + this.ubicacion + " FUE HIPOTECADA CON ÉXITO.\nSe le reintegró el 60% de la propiedad\nAhora tienes $"+ jugador.getPlata();
         }
+        return "No se pudo hipotecar la propiedad";
     }
 
     public String deshipotecar(Jugador jugador) {
         if (jugador == this.propietario && this.estado == EstadoPropiedades.HIPOTECADO && jugador.getPlata()>= this.getPrecio()* Constantes.PORCENTAJE_DE_DESHIPOTECAR){
-            String mensaje = "SU PROPIEDAD SE DESHIPOTECO CON EXITO\n";
             estado = EstadoPropiedades.COMPRADO;
             jugador.restarPlata((this.getPrecio()* Constantes.PORCENTAJE_DE_DESHIPOTECAR));
             jugador.sumarAlPatrimonio(this.getPrecio()* Constantes.PORCENTAJE_DE_VENTA); // Se suma el maximo posible (de venta).
-            mensaje += ("Ahora tienes $"+ jugador.getPlata());
-            return mensaje;
-        }else{
-            return ("ERROR: NO ES POSIBLE HIPOTECAR SU PROPIEDAD");
+            return "SU PROPIEDAD SE DESHIPOTECO CON EXITO - Ahora tienes $"+ jugador.getPlata()+"\n";
+        }else if (jugador.getPlata()< this.getPrecio()* Constantes.PORCENTAJE_DE_DESHIPOTECAR){
+            return "ERROR: NO ES POSIBLE HIPOTECAR SU PROPIEDAD - SIN SALDO SUFICIENTE";
+        }
+        else{
+            return "ERROR: NO ES POSIBLE HIPOTECAR SU PROPIEDAD";
         }
     }
 
@@ -107,7 +105,7 @@ public class Propiedad extends Comprable {
     public String venderComprable() {
         this.propietario.sumarPlata(precio * Constantes.PORCENTAJE_DE_VENTA);
         this.propietario.eliminarComprable(this);
-        return ("Ahora tiene $" + propietario.getPlata()+ "\n");
+        return "Propiedad vendida con exito \n Ahora tiene $" + propietario.getPlata();
     }
 
     public void actualizarAlquiler() {
@@ -119,7 +117,3 @@ public class Propiedad extends Comprable {
     }
 
 }
-
-
-
-

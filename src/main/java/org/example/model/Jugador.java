@@ -4,9 +4,8 @@ import org.example.controller.Constantes;
 import org.fusesource.jansi.Ansi;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
-
+import java.util.HashMap;
 
 public class Jugador{
     private final String nombre;
@@ -23,8 +22,6 @@ public class Jugador{
     private String textoAcciones;
     private boolean estaJugando;
 
-
-
     public Jugador(String nombre) {
         this.ubicacion = 0;
         this.nombre = nombre;
@@ -40,78 +37,6 @@ public class Jugador{
 
     }
 
-
-
-
-    public void setEstaJugando(){
-        this.estaJugando =true;
-    }
-
-    public void setTerminoDeJugar(){
-        this.estaJugando = false;
-
-    }
-
-    public boolean getEstaJugando(){
-        return this.estaJugando;
-    }
-
-    public String obtenerAccionesDisponibles(Ansi colorANSI){
-    String mensaje = "";
-    Ansi resetColor = Ansi.ansi().reset();
-    switch (estadoAcciones) {
-        case CON_BARRIO:
-            mensaje = acciones.accionesJugadorConBarrio(colorANSI, resetColor);
-            break;
-        case CON_CASA:
-            mensaje = acciones.accionesJugadorConPropiedad(colorANSI, resetColor);
-            break;
-        case PRESO:
-            mensaje = acciones.accionesJugadorPreso(colorANSI, resetColor);
-            break;
-        case SIN_PROPIEADES:
-            mensaje = acciones.accionesJugadorSinPropiedad(colorANSI, resetColor);
-            break;
-        default:
-            break;
-    }
-    return mensaje;
-    }
-
-    public EstadoAcciones getEstadoAcciones(){
-        return estadoAcciones;
-    }
-
-    public void actualizarEstadoAcciones(){
-        if (!propiedades.isEmpty() || !estaciones.isEmpty()){
-            if (tieneBarrio()) {
-                this.estadoAcciones = EstadoAcciones.CON_BARRIO;
-            }else{
-                this.estadoAcciones = EstadoAcciones.CON_CASA;
-            }
-        }else{
-            this.estadoAcciones = EstadoAcciones.SIN_PROPIEADES;
-        }
-    }
-
-
-    private boolean tieneBarrio(){
-        Map<Integer, Integer> ocurrencias = new HashMap<>();
-        for (Propiedad propiedad : propiedades){
-            if (ocurrencias.containsKey(propiedad.getBarrio())){
-                ocurrencias.put(propiedad.getBarrio(), ocurrencias.get(propiedad.getBarrio()) + 1);
-            }else{
-                ocurrencias.put(propiedad.getBarrio(), 1);
-            }
-        }
-        for (Map.Entry<Integer, Integer> entry : ocurrencias.entrySet()){
-            if (entry.getValue() == Constantes.CANTIDAD_CASAS_POR_BARRIO){
-                return true;
-            }
-        }
-        return false;
-    }
-
     public void sumarAlPatrimonio(double monto){
         this.patrimonio += monto;
     }
@@ -124,12 +49,10 @@ public class Jugador{
         propiedades.remove(propiedad);
     }
 
-    public void agregarEstacion(EstacionTransporte estacion){
-        estaciones.add(estacion);
-    }
+    public void agregarEstacion(EstacionTransporte estacion){estaciones.add(estacion);}
 
-    public void hipotecarPropiedad(Barrio barrio,Propiedad propiedad){
-        propiedad.hipotecar(barrio,this);
+    public String hipotecarPropiedad(Barrio barrio,Propiedad propiedad){
+        return propiedad.hipotecar(barrio,this);
 
     }
 
@@ -137,6 +60,9 @@ public class Jugador{
         this.patrimonio -= monto;
     }
 
+    public ArrayList<EstacionTransporte> getEstaciones() {
+        return estaciones;
+    }
 
     public String deshipotecarPropiedad(Propiedad propiedad){
         return propiedad.deshipotecar(this);
@@ -148,24 +74,23 @@ public class Jugador{
         }else {
             agregarEstacion((EstacionTransporte) comprable);
         }
-        actualizarEstadoAcciones();
     }
 
     public void eliminarComprable(Comprable comprable){
         if(comprable.getEsPropiedad()) {
             eliminarPropiedad((Propiedad)comprable);
         }else{
-        eliminarEstacion((EstacionTransporte)comprable);
+            eliminarEstacion((EstacionTransporte)comprable);
         }
     }
 
     public String comprarComprable(Comprable comprable){
         double precioComprable = comprable.getPrecio();
         if (this.plata >= precioComprable) {
-            String mensaje = comprable.setPropietario(this);
             sumarAlPatrimonio(precioComprable * Constantes.PORCENTAJE_DE_VENTA);
-            agregarComprable(comprable);
-            return mensaje;
+            comprable.setPropietario(this);
+            actualizarEstadoAcciones();
+            return "Se ha comprado la propiedad";
         }else{
             return "No se puede comprar propiedad";
         }
@@ -240,11 +165,71 @@ public class Jugador{
     }
 
     public String venderEstacion(Comprable comprable){
-        String mensaje = comprable.venderComprable();
         eliminarComprable(comprable);
         restarPatrimonio(comprable.getPrecio());
-        mensaje += ("Ahora tiene $" + this.getPlata());
+        return comprable.venderComprable();
+    }
+
+
+    public EstadoAcciones getEstadoAcciones(){
+        return estadoAcciones;
+    }
+    public void setEstadoAcciones(EstadoAcciones estadoAcciones){
+        this.estadoAcciones = estadoAcciones;
+    }
+
+    public void actualizarEstadoAcciones(){
+        if (estado != Estado.Preso){
+            this.estadoAcciones = EstadoAcciones.PRESO;
+            if (!propiedades.isEmpty() || !estaciones.isEmpty()){
+                if (tieneBarrio()) {
+                    this.estadoAcciones = EstadoAcciones.CON_BARRIO;
+                }else{
+                    this.estadoAcciones = EstadoAcciones.CON_CASA;
+                }
+            }else{
+                this.estadoAcciones = EstadoAcciones.SIN_PROPIEADES;
+            }
+        }
+    }
+    private boolean tieneBarrio(){
+        Map<Integer, Integer> ocurrencias = new HashMap<>();
+        for (Propiedad propiedad : propiedades){
+            if (ocurrencias.containsKey(propiedad.getBarrio())){
+                ocurrencias.put(propiedad.getBarrio(), ocurrencias.get(propiedad.getBarrio()) + 1);
+            }else{
+                ocurrencias.put(propiedad.getBarrio(), 1);
+            }
+        }
+        for (Map.Entry<Integer, Integer> entry : ocurrencias.entrySet()){
+            if (entry.getValue() == Constantes.CANTIDAD_CASAS_POR_BARRIO){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String obtenerAccionesDisponibles(Ansi colorANSI){
+        actualizarEstadoAcciones();
+        String mensaje = "";
+        Ansi resetColor = Ansi.ansi().reset();
+        switch (estadoAcciones) {
+            case CON_BARRIO:
+                mensaje = acciones.accionesJugadorConBarrio(colorANSI, resetColor);
+                break;
+            case CON_CASA:
+                mensaje = acciones.accionesJugadorConPropiedad(colorANSI, resetColor);
+                break;
+            case PRESO:
+                mensaje = acciones.accionesJugadorPreso(colorANSI, resetColor);
+                break;
+            case SIN_PROPIEADES:
+                mensaje = acciones.accionesJugadorSinPropiedad(colorANSI, resetColor);
+                break;
+            default:
+                break;
+        }
         return mensaje;
     }
-}
 
+}

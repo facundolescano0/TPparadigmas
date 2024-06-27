@@ -1,6 +1,5 @@
 package org.example.model;
 import org.fusesource.jansi.Ansi;
-import org.example.model.Accion;
 
 public class Acciones {
     public Accion getAccion(int accion,EstadoAcciones estadoAcciones){
@@ -18,19 +17,6 @@ public class Acciones {
         }
 
         return null;
-    }
-
-
-    public String accionesDisponibles(Ansi colorANSI,Ansi resetColor,EstadoAcciones acciones) {
-        if (acciones == EstadoAcciones.CON_BARRIO) {
-            return accionesJugadorConBarrio(colorANSI, resetColor);
-        } else if (acciones == EstadoAcciones.CON_CASA) {
-            return accionesJugadorConPropiedad(colorANSI, resetColor);
-        } else if (acciones == EstadoAcciones.SIN_PROPIEADES) {
-            return accionesJugadorSinPropiedad(colorANSI, resetColor);
-        } else {
-            return null;
-        }
     }
 
     public String acciones(Ansi colorANSI,Ansi resetColor){
@@ -91,9 +77,9 @@ public class Acciones {
 
     private Accion getAccionPreso(int accion) {
         if (accion == 1){
-            return Accion.TIRAR_DADOS;
+            return Accion.PAGAR_FIANZA;
         }
-        return Accion.PAGAR_FIANZA;
+        return Accion.TIRAR_DADOS;
     }
 
     private Accion getAccionSinPropiedades(int accion) {

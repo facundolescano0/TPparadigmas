@@ -12,10 +12,11 @@ public class Deshipotecar implements EjecutarAccion{
     }
 
     public String ejecutar(Jugador jugador, int propiedad, ConstruccionController controller) {
-        Propiedad prop = funciones.obtenerPropiedadJugador(propiedad,jugador);
+        Propiedad prop = funciones.obtenerPropiedadJugador(propiedad, jugador);
         if (prop != null) {
             return jugador.deshipotecarPropiedad(prop);
+        } else {
+            return ("No se puede deshipotecar. Esta propiedad no pertenece a " + jugador.getNombre());
         }
-        return null;
     }
 }

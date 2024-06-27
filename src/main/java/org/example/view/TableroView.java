@@ -6,8 +6,6 @@ import org.example.model.Jugador;
 import org.example.model.Barrio;
 import org.example.model.Propiedad;
 import org.example.model.Tablero;
-import org.example.model.tipoCasilleros.DePropiedad;
-import org.example.model.tipoCasilleros.Estacion;
 import org.fusesource.jansi.Ansi;
 import java.util.ArrayList;
 import java.util.HashMap;

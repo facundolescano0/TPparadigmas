@@ -4,9 +4,9 @@
 ### Instrucciones desde la terminal:
 <ol>
   <li>
-      
+
     git clone git@github.com:facundolescano0/TPparadigmas.git 
-    
+
   </li>
   <li>      
 
@@ -17,7 +17,7 @@
     mvn clean package 
  </li>
 <li>
-  
+
     java -jar  target/tp1-1.0-SNAPSHOT-jar-with-dependencies.jar
 </li>
 </ol>

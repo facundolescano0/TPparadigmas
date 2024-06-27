@@ -14,8 +14,9 @@ public class CheckHipotecar {
     }
 
     public boolean validarHipotecar(){
-        if (!jugador.getPropiedades().contains(propiedad)|| propiedad.getEstado() != EstadoPropiedades.COMPRADO){
+        if (!jugador.getPropiedades().contains(propiedad) || propiedad.getEstado() != EstadoPropiedades.COMPRADO){
             return false;
+
         }
         for (Propiedad propiedadDelBarrio: barrio.getPropiedades()){
             if (propiedadDelBarrio.getConstrucciones() != Construcciones.SIN_CASA){

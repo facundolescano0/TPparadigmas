@@ -1,7 +1,6 @@
 package org.example.controller;
 
 import org.example.funciones.FuncionesExtras;
-import org.example.model.EstacionTransporte;
 import org.example.model.Jugador;
 import org.example.model.Propiedad;
 import org.example.model.Comprable;
@@ -19,10 +18,11 @@ public class Vender implements EjecutarAccion {
         if (comprable != null) {
             if (comprable.getEsPropiedad()) {
                 return controller.vender(jugador, (Propiedad) comprable);
-            } else {
+            } else{
                 return jugador.venderEstacion(comprable);
             }
+        }else {
+            return ("No se puede vender. Esta propiedad no pertenece a " + jugador.getNombre());
         }
-        return null;
     }
 }

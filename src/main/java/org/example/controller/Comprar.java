@@ -21,6 +21,8 @@ public class Comprar implements EjecutarAccion{
             }else{
                 return ("No se puede comprar. Esta propiedad ya pertenece a " + propietario.getNombre());
             }
+        }else{
+            return ("No se puede comprar. Esta casilla no es comprable");
         }
         return null;
     }

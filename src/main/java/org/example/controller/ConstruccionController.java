@@ -18,13 +18,13 @@ public class ConstruccionController {
     public String venderSiendoPropietarioBarrio(Jugador jugador,Propiedad propiedad, Barrio barrio) {
         if(propiedad.getConstrucciones() == Construcciones.SIN_CASA){
             if (validarVentaTerreno(barrio)){
-                String mensaje = "";
                 double precioReventa = propiedad.getPrecio()*Constantes.PORCENTAJE_DE_VENTA;
                 jugador.restarPatrimonio(precioReventa);
-                mensaje += propiedad.venderComprable();
+                propiedad.venderComprable();
                 propiedad.liberar();
-                mensaje += ("Propiedad vendida con exito! \n Ahora tienes $" + jugador.getPlata());
-                return mensaje;
+                return "Propiedad vendida con exito! \n Ahora tienes $" + jugador.getPlata();
+            }else{
+                return "No puedes vender el terreno porque hay otras propiedades con casas";
             }
         }else{
             if (validarVenta(jugador,propiedad)){
@@ -32,10 +32,10 @@ public class ConstruccionController {
                 jugador.sumarPlata(precioReventa);
                 return deconstruirCasa(barrio,jugador,propiedad);
             }else{
-                return ("ERROR: EL JUGADOR " + jugador.getNombre() + " NO PUEDE VENDER DEBIDO A QUE EXCEDE EL LIMITE DE DIFERENCIA ENTRE LAS CONTRUCCIONES DE LAS PROPIEDADES");
+                return "Accion imposible de realizar";
+
             }
         }
-        return "No se puede vender esa propiedad";
     }
     public String vender(Jugador jugador,Propiedad propiedad){
         Barrio barrio = barrios.get(propiedad.getBarrio());
@@ -44,10 +44,8 @@ public class ConstruccionController {
         }else{
             double precioReventa = propiedad.getPrecio()*Constantes.PORCENTAJE_DE_VENTA;
             jugador.restarPatrimonio(precioReventa);
-            String mensaje = "";
-            mensaje +=  propiedad.venderComprable();
+            String mensaje = propiedad.venderComprable();
             propiedad.liberar();
-            mensaje += ("Propiedad vendida con exito!");
             return mensaje;
         }
     }
@@ -74,18 +72,18 @@ public class ConstruccionController {
     }
 
     public boolean validarConstruccion(Jugador jugador,int barrio,Propiedad propiedad){
-        if (!esPropietarioBarrio(jugador,barrios.get(barrio))||jugador.getPlata() < propiedad.getPrecioCasa() || propiedad.getConstrucciones() == Construcciones.HOTEL){
+        if (!esPropietarioBarrio(jugador,barrios.get(barrio))||jugador.getPlata() < propiedad.getPrecioCasa()||propiedad.getConstrucciones() == Construcciones.HOTEL) {
             return false;
-        }
-        ArrayList<Propiedad> listaDePropiedades = barrios.get(propiedad.getBarrio()).getPropiedades();
-        for (Propiedad listaDePropiedade : listaDePropiedades) {
-            int dif = propiedad.getConstrucciones().ordinal() - listaDePropiedade.getConstrucciones().ordinal();
-            if (dif > 0) {
-                return false;
-            }
-        }
-        return true;
     }
+    ArrayList<Propiedad> listaDePropiedades = barrios.get(propiedad.getBarrio()).getPropiedades();
+    for (int i=0; i<listaDePropiedades.size(); i++) {
+        int dif = propiedad.getConstrucciones().ordinal() - listaDePropiedades.get(i).getConstrucciones().ordinal();
+        if (dif > 0){
+           return  false;
+        }
+    }
+    return true;
+}
 
     public String construirEnPropiedad(Jugador jugador,Propiedad propiedad){
         if (validarConstruccion(jugador, propiedad.getBarrio(),propiedad)){
@@ -94,11 +92,9 @@ public class ConstruccionController {
             propiedad.actualizarAlquiler();
             jugador.restarPlata(propiedad.getPrecioCasa());
             jugador.sumarAlPatrimonio(propiedad.getPrecioCasa()* Constantes.PORCENTAJE_DE_VENTA);
-            mensaje += ("Propiedad mejorada a "+propiedad.getConstrucciones()+" con exito \n");
-            mensaje += ("Ahora tienes $" + jugador.getPlata());
-            return mensaje;
+            return ("Propiedad mejorada a "+propiedad.getConstrucciones()+" con exito \n Ahora tienes $" + jugador.getPlata());
         }else{
-            return "No se puede construir en esa propiedad";
+            return "ERROR: NO ES POSIBLE CONSTRUIR";
         }
     }
 
@@ -117,6 +113,6 @@ public class ConstruccionController {
             jugador.restarPatrimonio(propiedad.getPrecioCasa());
             propiedad.restarConstruccion();
             propiedad.actualizarAlquiler();
-            return ("Propiedad fue reducida a "+propiedad.getConstrucciones());
+        return ("Propiedad fue reducida a "+propiedad.getConstrucciones());
     }
 }

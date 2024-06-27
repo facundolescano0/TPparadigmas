@@ -2,7 +2,6 @@ package org.example.controller;
 
 import org.example.funciones.FuncionesExtras;
 import java.util.Scanner;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
