@@ -5,7 +5,7 @@
 <ol>
   <li>
 
-    git clone git@github.com:facundolescano0/TPparadigmas.git 
+    git clone --branch CorreccionTP1 --single-branch git@github.com:facundolescano0/TPparadigmas.git 
 
   </li>
   <li>      
